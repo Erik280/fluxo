@@ -301,6 +301,13 @@ class LeadMediaStorage:
                 expires_in=expires_in_seconds,
             )
             signed_url = signed.get("signedURL") or signed.get("signed_url") or ""
+            public_base = (getattr(self.settings, "supabase_public_url", "") or "https://srv-api.transformafuturo.com.br").rstrip("/")
+            internal_base = self.settings.supabase_url.rstrip("/")
+            if signed_url:
+                if internal_base in signed_url:
+                    signed_url = signed_url.replace(internal_base, public_base)
+                elif signed_url.startswith("/"):
+                    signed_url = f"{public_base}{signed_url}"
         except Exception as e:
             logger.error(f"[LeadMediaStorage] Falha ao criar signed URL: {e}")
             signed_url = ""

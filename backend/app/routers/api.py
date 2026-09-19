@@ -420,28 +420,21 @@ async def send_manual_media(
     else:
         media_type = "document"
 
-    # 2. Upload to Supabase Storage (LeadMediaStorage) - EFÊMERO
+    # 2. Upload to Supabase Storage (media-library)
     content = await file.read()
     
+    # Sanitizar nome do arquivo
+    safe_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', file.filename or "documento")
+    storage_path = f"{company_id}/chat_{uuid.uuid4()}_{safe_filename}"
+    
     import anyio
-    storage = LeadMediaStorage()
-    
-    # Gerar um ID temporário para o path
-    temp_msg_id = str(uuid.uuid4())
-    
-    # Executar upload (que tem compressão síncrona) em thread para não travar o loop
-    storage_res = await anyio.to_thread.run_sync(
-        storage.upload_lead_media,
+    storage = StorageService()
+    media_url = await anyio.to_thread.run_sync(
+        storage.upload_file,
         content,
-        media_type,
-        content_type,
-        company_id,
-        temp_msg_id
+        storage_path,
+        file.content_type
     )
-    
-    media_url = storage_res["signed_url"]
-    storage_path = storage_res["storage_path"]
-    expires_at = storage_res["expires_at"]
 
     # 3. Send via Evolution API
     from app.services.evolution import EvolutionAPI
@@ -457,8 +450,7 @@ async def send_manual_media(
     elif media_type == "video":
         resp = await evolution.send_video(phone, media_url)
     else:
-        original_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', file.filename or "documento")
-        resp = await evolution.send_document(phone, media_url, filename=original_filename)
+        resp = await evolution.send_document(phone, media_url, filename=safe_filename)
         
     if "error" in resp:
         logger.error(f"Erro Evolution API: {resp['error']}")
@@ -477,7 +469,7 @@ async def send_manual_media(
         "media_url": media_url,
         "media_type": media_type,
         "media_storage_path": storage_path,
-        "media_expires_at": expires_at,
+        "media_expires_at": None,
         "whatsapp_id": whatsapp_id
     }).execute()
     
@@ -819,8 +811,13 @@ async def react_message(message_id: str, body: ReactMessageRequest):
 @router.delete("/messages/{message_id}", status_code=204)
 async def delete_message(message_id: str):
     """Apaga uma mensagem do banco de dados."""
+    if message_id.startswith("temp-"):
+        return None
     db = get_supabase()
-    db.table("messages").delete().eq("id", message_id).execute()
+    try:
+        db.table("messages").delete().eq("id", message_id).execute()
+    except Exception as e:
+        logger.warning(f"Erro ao deletar mensagem {message_id}: {e}")
     return None
 
 
