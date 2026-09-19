@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     # --- Supabase ---
     supabase_url: str
     supabase_key: str   # SERVICE_ROLE_KEY (bypass RLS)
+    supabase_public_url: str = "https://srv-api.transformafuturo.com.br"
 
     # --- Evolution API ---
     evolution_api_url: str

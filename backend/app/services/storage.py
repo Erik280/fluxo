@@ -1,74 +1,85 @@
-import boto3
-from botocore.client import Config
-from app.config import get_settings
+"""
+SeuFluxo WhatsApp — Storage Service (Supabase Storage)
+Armazena mídias da biblioteca da empresa (Media Library), mídias de respostas rápidas
+e thumbnails de contatos diretamente no bucket público 'media-library' do Supabase Storage,
+eliminando a necessidade do MinIO.
+"""
+
 import logging
+from app.config import get_settings
 
 logger = logging.getLogger("seufluxo.storage")
+
+MEDIA_LIBRARY_BUCKET = "media-library"
+
 
 class StorageService:
     def __init__(self):
         self.settings = get_settings()
-        # Limpar endpoint caso o usuário tenha colocado http:// ou https:// por engano
-        endpoint = self.settings.minio_endpoint.replace("https://", "").replace("http://", "").rstrip("/")
-        self.s = boto3.Session(
-            aws_access_key_id=self.settings.minio_access_key,
-            aws_secret_access_key=self.settings.minio_secret_key,
-        )
-        self.s3 = self.s.client(
-            "s3",
-            endpoint_url=f"http{'s' if self.settings.minio_secure else ''}://{endpoint}",
-            config=Config(signature_version="s3v4"),
-            region_name=self.settings.minio_region
-        )
-        self.bucket = self.settings.minio_bucket
-        # Removida a checagem automática no __init__ para evitar overhead em cada request.
-        # A checagem deve ser feita apenas uma vez no startup ou manualmente se necessário.
+        self._client = None
+        self.bucket = MEDIA_LIBRARY_BUCKET
+        self.public_base_url = (
+            getattr(self.settings, "supabase_public_url", "")
+            or "https://srv-api.transformafuturo.com.br"
+        ).rstrip("/")
+
+    @property
+    def client(self):
+        """Lazy init do cliente Supabase."""
+        if self._client is None:
+            from supabase import create_client
+            self._client = create_client(
+                self.settings.supabase_url,
+                self.settings.supabase_key,
+            )
+        return self._client
 
     def _ensure_bucket_exists(self):
-        """Garante que o bucket existe (útil no primeiro setup)."""
+        """Garante que o bucket media-library existe e é público."""
         try:
-            self.s3.head_bucket(Bucket=self.bucket)
-        except Exception:
-            logger.info(f"Criando bucket {self.bucket} no MinIO...")
-            try:
-                self.s3.create_bucket(Bucket=self.bucket)
-                # Configurar para acesso público de leitura
-                policy = {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": "*",
-                            "Action": ["s3:GetObject"],
-                            "Resource": [f"arn:aws:s3:::{self.bucket}/*"]
-                        }
-                    ]
-                }
-                import json
-                self.s3.put_bucket_policy(Bucket=self.bucket, Policy=json.dumps(policy))
-            except Exception as e:
-                logger.error(f"Erro ao criar bucket ou policy: {e}")
+            buckets = self.client.storage.list_buckets()
+            existing = [b.name for b in buckets]
+            if self.bucket not in existing:
+                self.client.storage.create_bucket(
+                    self.bucket,
+                    options={"public": True}
+                )
+                logger.info(f"Bucket público '{self.bucket}' criado no Supabase Storage.")
+        except Exception as e:
+            logger.warning(f"Erro ao verificar/criar bucket '{self.bucket}': {e}")
 
     def upload_file(self, file_content: bytes, filename: str, content_type: str) -> str:
-        """Faz o upload para o MinIO e retorna a URL pública."""
+        """
+        Faz o upload para o bucket media-library do Supabase Storage
+        e retorna a URL pública acessível externamente.
+        """
         try:
-            self.s3.put_object(
-                Bucket=self.bucket,
-                Key=filename,
-                Body=file_content,
-                ContentType=content_type
+            storage_path = filename.lstrip("/")
+
+            # Upsert true para permitir sobrescrita se o arquivo já existir
+            self.client.storage.from_(self.bucket).upload(
+                path=storage_path,
+                file=file_content,
+                file_options={
+                    "content-type": content_type or "application/octet-stream",
+                    "upsert": "true",
+                },
             )
-            # Retorna a URL (Considerando o endpoint público do MinIO que normalmente está exposto)
-            # Se minio_endpoint for interno (ex: minio:9000), a URL gerada precisa ser acessível externamente
-            # Vamos usar um presigned URL se o endpoint for interno, mas como a Evolution API e o frontend precisam ver,
-            # vamos gerar uma URL baseada no hostname público se possível, ou um presigned URL de 7 dias.
-            
-            # Retorna a URL pública limpa (sem parâmetros de assinatura)
-            # Já que configuramos a policy do bucket como pública no _ensure_bucket_exists
-            protocol = "https" if self.settings.minio_secure else "http"
-            public_url = f"{protocol}://{self.settings.minio_endpoint}/{self.bucket}/{filename}"
-            
+
+            public_url = f"{self.public_base_url}/storage/v1/object/public/{self.bucket}/{storage_path}"
+            logger.info(f"[StorageService] Upload OK no Supabase Storage [{self.bucket}]: {public_url}")
             return public_url
         except Exception as e:
-            logger.error(f"Erro no upload do MinIO: {e}")
+            logger.error(f"[StorageService] Erro no upload do Supabase Storage ({self.bucket}/{filename}): {e}")
             raise e
+
+    def delete_file(self, filename: str) -> bool:
+        """Remove um arquivo do bucket media-library."""
+        try:
+            storage_path = filename.lstrip("/")
+            self.client.storage.from_(self.bucket).remove([storage_path])
+            logger.info(f"[StorageService] Arquivo removido do Supabase Storage: {storage_path}")
+            return True
+        except Exception as e:
+            logger.warning(f"[StorageService] Erro ao remover arquivo do Supabase Storage ({filename}): {e}")
+            return False

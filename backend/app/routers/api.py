@@ -523,10 +523,10 @@ async def upload_media_to_library(
     name: str = Form(...),
     file: UploadFile = File(...)
 ):
-    """Faz upload de uma mídia para o MinIO e salva na biblioteca."""
+    """Faz upload de uma mídia para o Supabase Storage (media-library) e salva na biblioteca."""
     db = get_supabase()
     
-    # 1. Upload to MinIO
+    # 1. Upload to Supabase Storage (media-library)
     content = await file.read()
     
     # Sanitizar nome do arquivo (remover espaços e caracteres especiais)
@@ -565,10 +565,20 @@ async def upload_media_to_library(
 
 @router.delete("/media/{media_id}", status_code=204)
 async def delete_media_from_library(media_id: str):
-    """Deleta uma mídia da biblioteca."""
+    """Deleta uma mídia da biblioteca e remove o arquivo do Supabase Storage."""
     db = get_supabase()
+    try:
+        res = db.table("media_library").select("url").eq("id", media_id).execute()
+        if res.data and res.data[0].get("url"):
+            url = res.data[0]["url"]
+            prefix = "/storage/v1/object/public/media-library/"
+            if prefix in url:
+                path = url.split(prefix)[-1]
+                storage = StorageService()
+                storage.delete_file(path)
+    except Exception as e:
+        logger.warning(f"Erro ao remover arquivo físico da mídia {media_id}: {e}")
     db.table("media_library").delete().eq("id", media_id).execute()
-    # Opcional: deletar arquivo físico do MinIO aqui se desejado
     return None
 
 class SendMediaLibraryRequest(BaseModel):
@@ -1440,7 +1450,7 @@ async def create_quick_reply(body: QuickReplyCreate):
     promoted_type = None
     
     # Se o conteúdo parecer ser uma URL de mídia efêmera do Supabase Storage, 
-    # precisamos "promovê-la" para o MinIO (Media Library) para que não expire.
+    # precisamos "promovê-la" para o Supabase Storage (Media Library) para que não expire.
     if "supabase.co/storage/v1/object/sign/lead-media" in content or "/storage/v1/object/public/lead-media" in content:
         try:
             logger.info(f"Promovendo mídia efêmera para Media Library: {content}")
@@ -1451,9 +1461,9 @@ async def create_quick_reply(body: QuickReplyCreate):
                     media_bytes = media_resp.content
                     content_type = media_resp.headers.get("content-type", "application/octet-stream")
                     
-                    # Upload para MinIO
+                    # Upload para Supabase Storage
                     from app.services.storage import StorageService
-                    minio = StorageService()
+                    storage = StorageService()
                     
                     # Nome amigável
                     ext = content_type.split("/")[-1] if "/" in content_type else "bin"
@@ -1461,7 +1471,7 @@ async def create_quick_reply(body: QuickReplyCreate):
                     
                     import anyio
                     new_url = await anyio.to_thread.run_sync(
-                        minio.upload_file,
+                        storage.upload_file,
                         media_bytes,
                         filename,
                         content_type

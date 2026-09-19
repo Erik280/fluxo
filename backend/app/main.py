@@ -32,9 +32,8 @@ async def lifespan(app: FastAPI):
     logger.info(f"  Ambiente: {settings.app_env}")
     logger.info(f"  Supabase: {settings.supabase_url}")
     logger.info(f"  Evolution: {settings.evolution_api_url}")
-    logger.info(f"  MinIO Endpoint: {settings.minio_endpoint}")
-    logger.info(f"  MinIO Secure: {settings.minio_secure}")
-    logger.info(f"  MinIO Region: {settings.minio_region}")
+    logger.info(f"  Supabase Public URL: {settings.supabase_public_url}")
+    logger.info("  Storage: Supabase Storage (media-library / lead-media)")
     logger.info("═" * 60)
     # Start background scheduler
     start_scheduler()
