@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Trash2, Plus, Zap } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Trash2, Plus, Zap, Search, X } from 'lucide-react';
 import { API_BASE_URL, supabase } from '../supabaseClient';
 import CustomConfirmModal, { type ConfirmModalConfig } from '../components/CustomConfirmModal';
 import './QuickRepliesView.css';
@@ -16,6 +16,7 @@ interface QuickReply {
 
 export default function QuickRepliesView() {
   const [replies, setReplies] = useState<QuickReply[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   
   // Form State
@@ -187,35 +188,88 @@ export default function QuickRepliesView() {
     });
   };
 
+  const filteredReplies = useMemo(() => {
+    if (!searchQuery.trim()) return replies;
+    const q = searchQuery.toLowerCase().trim();
+    return replies.filter(r => {
+      const matchShortcut = r.shortcut.toLowerCase().includes(q) || `/${r.shortcut.toLowerCase()}`.includes(q);
+      const matchContent = r.content?.toLowerCase().includes(q);
+      const matchMediaType = r.media_type?.toLowerCase().includes(q);
+      return matchShortcut || matchContent || matchMediaType;
+    });
+  }, [replies, searchQuery]);
+
   return (
     <div className="quick-replies-root">
       <header className="qr-header">
-        <div className="qr-title">
-          <Zap size={24} style={{ color: 'var(--primary)' }} />
-          <h1>Respostas Rápidas</h1>
+        <div className="qr-title-box">
+          <div className="qr-title">
+            <Zap size={24} style={{ color: 'var(--primary)' }} />
+            <h1>Respostas Rápidas</h1>
+          </div>
+          <span className="qr-count-badge">{filteredReplies.length} de {replies.length} atalhos</span>
         </div>
-        <button className="qr-add-btn" onClick={() => setShowModal(true)}>
-          <Plus size={18} />
-          <span>Novo Atalho</span>
-        </button>
+
+        <div className="qr-header-actions">
+          <div className="qr-search-wrapper">
+            <Search size={16} className="qr-search-icon" />
+            <input 
+              type="text"
+              className="qr-search-input"
+              placeholder="Buscar por atalho (/pix) ou texto..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button 
+                type="button" 
+                className="qr-search-clear" 
+                onClick={() => setSearchQuery('')}
+                title="Limpar busca"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          <button className="qr-add-btn" onClick={() => setShowModal(true)}>
+            <Plus size={18} />
+            <span>Novo Atalho</span>
+          </button>
+        </div>
       </header>
 
       <div className="qr-content">
         {loading ? (
           <div className="qr-empty">Carregando...</div>
-        ) : replies.length === 0 ? (
+        ) : filteredReplies.length === 0 ? (
           <div className="qr-empty">
             <Zap size={48} style={{ color: 'var(--border)' }} />
-            <h3>Nenhuma resposta rápida ainda</h3>
-            <p>Crie atalhos para agilizar seu atendimento usando a barra "/".</p>
+            {searchQuery ? (
+              <>
+                <h3>Nenhuma resposta rápida encontrada</h3>
+                <p>Nenhum atalho corresponde à pesquisa "{searchQuery}".</p>
+                <button 
+                  className="btn-clear-search"
+                  onClick={() => setSearchQuery('')}
+                >
+                  Limpar pesquisa
+                </button>
+              </>
+            ) : (
+              <>
+                <h3>Nenhuma resposta rápida ainda</h3>
+                <p>Crie atalhos para agilizar seu atendimento usando a barra "/".</p>
+              </>
+            )}
           </div>
         ) : (
           <div className="qr-grid">
-            {replies.map(reply => (
+            {filteredReplies.map(reply => (
               <div key={reply.id} className="qr-card">
                 <div className="qr-card-header">
                   <span className="qr-shortcut">/{reply.shortcut}</span>
-                  <button className="qr-del-btn" onClick={() => handleDelete(reply.id)}>
+                  <button className="qr-del-btn" onClick={() => handleDelete(reply.id)} title="Excluir atalho">
                     <Trash2 size={16} />
                   </button>
                 </div>
