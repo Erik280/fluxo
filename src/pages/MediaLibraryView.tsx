@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { supabase, API_BASE_URL } from '../supabaseClient';
-import { Search, Trash2, FolderOpen, Image, Video, Music, File, X } from 'lucide-react';
+import { Search, Trash2, FolderOpen, Image, Video, Music, X } from 'lucide-react';
 import CustomConfirmModal, { type ConfirmModalConfig } from '../components/CustomConfirmModal';
 import './MediaLibraryView.css';
 
