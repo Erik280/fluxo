@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FolderOpen, Plus, Mic, Trash2, Send, FileText, Zap, Filter, ArrowLeft, Smile, Forward, Search, Check, Pencil, AlertTriangle, X, Square, Menu } from 'lucide-react';
 import { supabase, API_BASE_URL } from '../supabaseClient';
 import ContactCrmModal from '../components/ContactCrmModal';
@@ -56,7 +57,14 @@ interface QuickReply {
   media_type?: string | null;
 }
 
-export default function ChatView() {
+interface ChatViewProps {
+  activeChatParam?: string;
+}
+
+export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
+  const navigate = useNavigate();
+  const { '*': wildcard } = useParams();
+  const routeChatParam = activeChatParam || (wildcard?.startsWith('chat/') ? wildcard.split('/')[1] : undefined);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [stages, setStages] = useState<any[]>([]);
@@ -72,6 +80,70 @@ export default function ChatView() {
     const saved = localStorage.getItem('chat_use_signature');
     return saved !== null ? saved === 'true' : false;
   });
+
+  // ── Sincronizar contato ativo via link único da URL (/dashboard/chat/:identifier) ──
+  useEffect(() => {
+    if (!routeChatParam || !companyId) return;
+
+    const cleanParam = routeChatParam.replace(/\D/g, '');
+
+    if (
+      selectedContact && (
+        selectedContact.phone === routeChatParam ||
+        selectedContact.id === routeChatParam ||
+        (cleanParam && selectedContact.phone && selectedContact.phone.replace(/\D/g, '') === cleanParam)
+      )
+    ) {
+      return;
+    }
+
+    const localMatch = contacts.find(c => 
+      c.phone === routeChatParam ||
+      c.id === routeChatParam ||
+      (cleanParam && c.phone && c.phone.replace(/\D/g, '') === cleanParam)
+    );
+
+    if (localMatch) {
+      setSelectedContact(localMatch);
+      setMobileView('messages');
+      return;
+    }
+
+    let isMounted = true;
+    const fetchDirectContact = async () => {
+      try {
+        let query = supabase
+          .from('contacts')
+          .select('*, contact_tags(tag_id, tags(id, name, color))')
+          .eq('company_id', companyId);
+
+        if (cleanParam && cleanParam.length >= 8) {
+          query = query.or(`phone.eq.${cleanParam},phone.eq.${routeChatParam},id.eq.${routeChatParam}`);
+        } else {
+          query = query.eq('id', routeChatParam);
+        }
+
+        const { data, error } = await query.limit(1).maybeSingle();
+        if (!error && data && isMounted) {
+          setContacts(prev => {
+            if (prev.some(c => c.id === data.id)) return prev;
+            return [data, ...prev];
+          });
+          setSelectedContact(data);
+          setMobileView('messages');
+        }
+      } catch (err) {
+        console.error('Erro ao recuperar conversa da URL:', err);
+      }
+    };
+
+    fetchDirectContact();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [routeChatParam, companyId, contacts, selectedContact]);
+
 
   // Media Library state
   const [showMediaModal, setShowMediaModal] = useState(false);
@@ -1406,7 +1478,7 @@ export default function ChatView() {
             <header className="message-header">
               <button
                 className="mobile-back-btn"
-                onClick={() => setMobileView('list')}
+                onClick={() => { setMobileView('list'); navigate('/dashboard/chat'); }}
                 aria-label="Voltar para lista"
               >
                 <ArrowLeft size={20} />

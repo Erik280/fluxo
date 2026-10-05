@@ -82,37 +82,54 @@ export default function SettingsView() {
   };
 
   const fetchCompanyData = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return;
-    
-    const { data: userData } = await supabase
-      .from('users')
-      .select('company_id')
-      .eq('auth_id', session.user.id)
-      .single();
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setConnectionStatus('unconfigured');
+        return;
+      }
       
-    if (userData) {
-      const { data: companyData } = await supabase
-        .from('companies')
-        .select('*')
-        .eq('id', userData.company_id)
+      const { data: userData } = await supabase
+        .from('users')
+        .select('company_id')
+        .eq('auth_id', session.user.id)
         .single();
         
-      if (companyData) {
-        setCompany(companyData);
-        if (companyData.evolution_instance) {
-          checkConnectionStatus(companyData.evolution_instance);
+      if (userData?.company_id) {
+        const { data: companyData } = await supabase
+          .from('companies')
+          .select('*')
+          .eq('id', userData.company_id)
+          .single();
+          
+        if (companyData) {
+          setCompany(companyData);
+          if (companyData.evolution_instance) {
+            checkConnectionStatus(companyData.evolution_instance);
+          } else {
+            setConnectionStatus('unconfigured');
+          }
+          fetchKnowledgeItems(companyData.id);
         } else {
           setConnectionStatus('unconfigured');
         }
-        fetchKnowledgeItems(companyData.id);
+      } else {
+        setConnectionStatus('unconfigured');
       }
+    } catch (e) {
+      console.error(e);
+      setConnectionStatus('unconfigured');
     }
   };
 
   const checkConnectionStatus = async (instanceName: string) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/evolution/status/${instanceName}`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const response = await fetch(`${API_BASE_URL}/api/evolution/status/${instanceName}`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
       const data = await response.json();
       
       if (data.instance?.state) {
@@ -122,7 +139,7 @@ export default function SettingsView() {
       }
     } catch (e) {
       console.error(e);
-      setConnectionStatus('error');
+      setConnectionStatus('disconnected');
     }
   };
 
@@ -326,9 +343,10 @@ export default function SettingsView() {
                   {(connectionStatus === 'close' || connectionStatus === 'disconnected') && <span className="badge badge-danger">Desconectado</span>}
                   {connectionStatus === 'unconfigured' && <span className="badge badge-error">Instância não configurada</span>}
                   {connectionStatus === 'loading' && <span className="badge badge-neutral">Verificando...</span>}
+                  {connectionStatus === 'error' && <span className="badge badge-danger">Erro na Conexão</span>}
                 </div>
 
-                {(connectionStatus === 'close' || connectionStatus === 'disconnected' || connectionStatus === 'connecting' || connectionStatus === 'unconfigured') && (
+                {(connectionStatus === 'close' || connectionStatus === 'disconnected' || connectionStatus === 'connecting' || connectionStatus === 'unconfigured' || connectionStatus === 'error') && (
                   <div className="qr-section">
                     {qrCode ? (
                       <div className="qr-display">

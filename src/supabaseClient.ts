@@ -37,6 +37,12 @@ function getConfig() {
 
 const { supabaseUrl, supabaseAnonKey, apiBaseUrl } = getConfig();
 
-export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<any>) => {
+      return await fn();
+    },
+  },
+});
 
 export const API_BASE_URL = apiBaseUrl;

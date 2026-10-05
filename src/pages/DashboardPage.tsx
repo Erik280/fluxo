@@ -16,10 +16,14 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const { '*': wildcard } = useParams();
 
-  // Derive activeView from the URL; default to 'chat'
-  const activeView: ViewType = VALID_VIEWS.includes(wildcard as ViewType)
-    ? (wildcard as ViewType)
-    : 'chat';
+  // segments: ex: ['chat', '554888602478']
+  const segments = (wildcard || '').split('/').filter(Boolean);
+  const currentView = segments[0] as ViewType;
+
+  // Derive activeView from the URL; default to 'kanban'
+  const activeView: ViewType = VALID_VIEWS.includes(currentView)
+    ? currentView
+    : (VALID_VIEWS.includes(wildcard as ViewType) ? (wildcard as ViewType) : 'kanban');
 
   const handleViewChange = (view: ViewType) => {
     navigate(`/dashboard/${view}`);
@@ -27,7 +31,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout activeView={activeView} onViewChange={handleViewChange}>
-      {activeView === 'chat'          && <ChatView />}
+      {activeView === 'chat'          && <ChatView activeChatParam={segments[1]} />}
       {activeView === 'kanban'        && <KanbanView />}
       {activeView === 'settings'      && <SettingsView />}
       {activeView === 'media'         && <MediaLibraryView />}

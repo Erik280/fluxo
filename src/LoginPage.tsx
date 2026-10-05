@@ -76,13 +76,48 @@ function ParticleCanvas() {
 // --- Main Login Page ---
 
 export default function LoginPage() {
-  const [email, setEmail]     = useState('eriklima.me@gmail.com');
-  const [password, setPassword] = useState('');
-  const [showPass, setShowPass] = useState(false);
-  const [loading, setLoading]  = useState(false);
-  const [shake, setShake]      = useState(false);
-  const [error, setError]      = useState('');
+  const [email, setEmail]         = useState('eriklima.me@gmail.com');
+  const [password, setPassword]   = useState('');
+  const [showPass, setShowPass]   = useState(false);
+  const [loading, setLoading]     = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [shake, setShake]         = useState(false);
+  const [error, setError]         = useState('');
   const navigate = useNavigate();
+
+  // Verifica se o usuário já possui sessão ativa salva (reconhece login anterior)
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkExistingSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && isMounted) {
+          navigate('/dashboard/kanban', { replace: true });
+          return;
+        }
+      } catch (err) {
+        console.error('Erro ao verificar sessão ativa:', err);
+      } finally {
+        if (isMounted) {
+          setCheckingAuth(false);
+        }
+      }
+    };
+
+    checkExistingSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && isMounted) {
+        navigate('/dashboard/kanban', { replace: true });
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,7 +148,7 @@ export default function LoginPage() {
 
       if (data.session) {
         console.log('✅ Login realizado com sucesso!', data.user?.email);
-        navigate('/dashboard');
+        navigate('/dashboard/kanban', { replace: true });
       }
     } catch (err) {
       setError('Erro de conexão. Tente novamente.');
@@ -122,6 +157,42 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  // Enquanto valida a sessão existente, mostra tela limpa com verificação suave para evitar flicker
+  if (checkingAuth) {
+    return (
+      <div className="login-root">
+        <ParticleCanvas />
+        <div className="blob blob--green" aria-hidden="true" />
+        <div className="blob blob--cyan"  aria-hidden="true" />
+        <main className="login-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '360px', gap: '20px' }} role="main">
+          <header className="login-header" style={{ marginBottom: 0 }}>
+            <div className="logo-ring" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <path d="M20 3C10.6 3 3 10.6 3 20s7.6 17 17 17 17-7.6 17-17S29.4 3 20 3z" stroke="url(#gG_load)" strokeWidth="1.8" fill="none"/>
+                <path d="M14 20c0-3.3 2.7-6 6-6s6 2.7 6 6c0 2.3-1.3 4.3-3.2 5.4L24 29h-8l1.2-3.6C15.3 24.3 14 22.3 14 20z" fill="url(#gG2_load)"/>
+                <defs>
+                  <linearGradient id="gG_load" x1="3" y1="3" x2="37" y2="37" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#00FF88"/>
+                    <stop offset="100%" stopColor="#00E5CC"/>
+                  </linearGradient>
+                  <linearGradient id="gG2_load" x1="14" y1="14" x2="26" y2="30" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#00FF88"/>
+                    <stop offset="100%" stopColor="#00E5CC"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <h1 className="login-title">
+              Seu<span className="brand-accent">Fluxo</span>
+            </h1>
+            <p className="login-subtitle">Verificando sessão ativa...</p>
+          </header>
+          <span className="spinner" style={{ width: '28px', height: '28px', borderColor: 'rgba(0, 255, 136, 0.2)', borderTopColor: '#00FF88' }} aria-label="Verificando conexão…" />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="login-root">
@@ -212,6 +283,7 @@ export default function LoginPage() {
                   </svg>
                 ) : (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 backward" style={{ display: 'none' }} />
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                     <circle cx="12" cy="12" r="3"/>
                   </svg>

@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/dashboard/*" element={<DashboardPage />} />
-        <Route path="*" element={<Navigate to="/dashboard/chat" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard/kanban" replace />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
