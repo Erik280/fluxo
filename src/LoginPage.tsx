@@ -82,7 +82,7 @@ function ParticleCanvas() {
 // --- Main Login Page ---
 
 export default function LoginPage() {
-  const [email, setEmail]         = useState('eriklima.me@gmail.com');
+  const [email, setEmail]         = useState('');
   const [password, setPassword]   = useState('');
   const [showPass, setShowPass]   = useState(false);
   const [loading, setLoading]     = useState(false);
