@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase, API_BASE_URL } from '../supabaseClient';
-import { Smartphone, Tags, Zap, Users, ShieldAlert, Book, FileText, Trash2, UploadCloud, UserCircle, Eye } from 'lucide-react';
+import { Smartphone, Tags, Zap, Users, ShieldAlert, Book, FileText, Trash2, UploadCloud, UserCircle, Eye, Camera, RefreshCw } from 'lucide-react';
 import CustomConfirmModal, { type ConfirmModalConfig } from '../components/CustomConfirmModal';
 import './SettingsView.css';
 
@@ -28,6 +28,8 @@ export default function SettingsView() {
   const [profileUserId, setProfileUserId] = useState<string>('');
   const [profileName, setProfileName] = useState('');
   const [profileSignature, setProfileSignature] = useState('');
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileSaveMsg, setProfileSaveMsg] = useState<{ text: string; ok: boolean } | null>(null);
   const [showSigPreview, setShowSigPreview] = useState(false);
@@ -54,13 +56,84 @@ export default function SettingsView() {
     if (!session) return;
     const { data } = await supabase
       .from('users')
-      .select('id, name, signature')
+      .select('id, name, signature, avatar_url')
       .eq('auth_id', session.user.id)
       .single();
     if (data) {
       setProfileUserId(data.id);
       setProfileName(data.name || '');
       setProfileSignature(data.signature || '');
+      setProfileAvatarUrl(data.avatar_url || null);
+    }
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !profileUserId) return;
+
+    if (!file.type.startsWith('image/')) {
+      setProfileSaveMsg({ text: 'Por favor, selecione uma imagem válida (PNG, JPG, WEBP).', ok: false });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setProfileSaveMsg({ text: 'A imagem deve ter no máximo 5MB.', ok: false });
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    setProfileSaveMsg(null);
+
+    try {
+      const fileExt = file.name.split('.').pop() || 'jpg';
+      const fileName = `${profileUserId}-${Date.now()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: publicData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const publicUrl = publicData.publicUrl;
+
+      const { error: dbError } = await supabase
+        .from('users')
+        .update({ avatar_url: publicUrl })
+        .eq('id', profileUserId);
+
+      if (dbError) throw dbError;
+
+      setProfileAvatarUrl(publicUrl);
+      setProfileSaveMsg({ text: 'Foto atualizada com sucesso!', ok: true });
+      setTimeout(() => setProfileSaveMsg(null), 3000);
+    } catch (err: any) {
+      console.error('Erro no upload do avatar:', err);
+      setProfileSaveMsg({ text: 'Erro ao enviar imagem. Verifique sua conexão.', ok: false });
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    if (!profileUserId) return;
+    setIsUploadingAvatar(true);
+    try {
+      await supabase
+        .from('users')
+        .update({ avatar_url: null })
+        .eq('id', profileUserId);
+      setProfileAvatarUrl(null);
+      setProfileSaveMsg({ text: 'Foto removida.', ok: true });
+      setTimeout(() => setProfileSaveMsg(null), 3000);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsUploadingAvatar(false);
     }
   };
 
@@ -538,10 +611,55 @@ export default function SettingsView() {
             <div className="settings-card">
               <h3>Meu Perfil</h3>
               <p className="settings-desc">
-                Configure seu nome e assinatura que serão usados nas mensagens do Chat quando a assinatura estiver ativada.
+                Configure sua foto de perfil, nome e assinatura para o sistema e atendimento.
               </p>
 
               <div className="profile-form">
+                {/* Avatar Section */}
+                <div className="profile-avatar-section">
+                  <div className="avatar-preview-box">
+                    <img 
+                      src={profileAvatarUrl || '/user-avatar.jpg'} 
+                      alt="Avatar atual" 
+                      className="profile-avatar-img"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/user-avatar.jpg';
+                      }}
+                    />
+                    {isUploadingAvatar && (
+                      <div className="avatar-loading-overlay">
+                        <RefreshCw size={20} className="spin-icon" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="avatar-controls">
+                    <label htmlFor="avatar-file-input" className="btn-upload-avatar">
+                      <Camera size={16} />
+                      <span>{profileAvatarUrl ? 'Trocar Imagem' : 'Enviar Imagem'}</span>
+                    </label>
+                    <input 
+                      id="avatar-file-input" 
+                      type="file" 
+                      accept="image/*" 
+                      style={{ display: 'none' }} 
+                      onChange={handleAvatarUpload}
+                      disabled={isUploadingAvatar}
+                    />
+                    {profileAvatarUrl && (
+                      <button 
+                        type="button" 
+                        className="btn-remove-avatar" 
+                        onClick={handleRemoveAvatar}
+                        disabled={isUploadingAvatar}
+                        title="Remover foto"
+                      >
+                        <Trash2 size={16} />
+                        <span>Remover</span>
+                      </button>
+                    )}
+                    <p className="avatar-hint">JPG, PNG ou WebP de até 5MB. Aparece no topo do menu lateral.</p>
+                  </div>
+                </div>
                 <div className="profile-field">
                   <label htmlFor="profile-name">Seu Nome</label>
                   <input

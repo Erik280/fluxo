@@ -14,6 +14,8 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children, activeView, onViewChange }: DashboardLayoutProps) {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [userAvatar, setUserAvatar] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string>('');
 
   useEffect(() => {
     const handleOpenMenu = () => setIsMobileMenuOpen(true);
@@ -64,9 +66,14 @@ export default function DashboardLayout({ children, activeView, onViewChange }: 
       
       const { data: userData } = await supabase
         .from('users')
-        .select('company_id')
+        .select('company_id, name, avatar_url')
         .eq('auth_id', session.user.id)
         .single();
+        
+      if (userData) {
+        if (userData.avatar_url) setUserAvatar(userData.avatar_url);
+        if (userData.name) setUserName(userData.name);
+      }
         
       if (userData?.company_id) {
         const audio = new Audio('/sound/notification.mp3');
@@ -117,21 +124,18 @@ export default function DashboardLayout({ children, activeView, onViewChange }: 
         >
           <Menu size={24} />
         </button>
-        <div className="mobile-logo">
-          <svg width="24" height="24" viewBox="0 0 40 40" fill="none">
-            <path d="M20 3C10.6 3 3 10.6 3 20s7.6 17 17 17 17-7.6 17-17S29.4 3 20 3z" stroke="url(#gG)" strokeWidth="1.8" fill="none"/>
-            <path d="M14 20c0-3.3 2.7-6 6-6s6 2.7 6 6c0 2.3-1.3 4.3-3.2 5.4L24 29h-8l1.2-3.6C15.3 24.3 14 22.3 14 20z" fill="url(#gG2)"/>
-            <defs>
-              <linearGradient id="gG" x1="3" y1="3" x2="37" y2="37" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
-                <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
-              </linearGradient>
-              <linearGradient id="gG2" x1="14" y1="14" x2="26" y2="30" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
-                <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
-              </linearGradient>
-            </defs>
-          </svg>
+        <div className="mobile-logo" onClick={() => handleViewChange('settings')} style={{ cursor: 'pointer' }} title={userName || 'Meu Perfil'}>
+          <div className="avatar-wrapper mobile-avatar-ring">
+            <img 
+              src={userAvatar || '/user-avatar.jpg'} 
+              alt={userName || 'Avatar'} 
+              className="user-top-avatar"
+              onError={(e) => {
+                // Fallback para o avatar gerado caso o link do banco falhe
+                (e.target as HTMLImageElement).src = '/user-avatar.jpg';
+              }}
+            />
+          </div>
         </div>
       </header>
 
@@ -154,21 +158,20 @@ export default function DashboardLayout({ children, activeView, onViewChange }: 
         </button>
 
         <div className="sidebar-logo">
-          <div className="logo-ring">
-            <svg width="24" height="24" viewBox="0 0 40 40" fill="none">
-              <path d="M20 3C10.6 3 3 10.6 3 20s7.6 17 17 17 17-7.6 17-17S29.4 3 20 3z" stroke="url(#gG)" strokeWidth="1.8" fill="none"/>
-              <path d="M14 20c0-3.3 2.7-6 6-6s6 2.7 6 6c0 2.3-1.3 4.3-3.2 5.4L24 29h-8l1.2-3.6C15.3 24.3 14 22.3 14 20z" fill="url(#gG2)"/>
-              <defs>
-                <linearGradient id="gG" x1="3" y1="3" x2="37" y2="37" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
-                  <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
-                </linearGradient>
-                <linearGradient id="gG2" x1="14" y1="14" x2="26" y2="30" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
-                  <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
-                </linearGradient>
-              </defs>
-            </svg>
+          <div 
+            className="logo-ring avatar-wrapper" 
+            onClick={() => handleViewChange('settings')} 
+            style={{ cursor: 'pointer' }}
+            title={userName ? `Logado como: ${userName}` : 'Meu Perfil'}
+          >
+            <img 
+              src={userAvatar || '/user-avatar.jpg'} 
+              alt={userName || 'Avatar'} 
+              className="user-top-avatar"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/user-avatar.jpg';
+              }}
+            />
           </div>
         </div>
 
