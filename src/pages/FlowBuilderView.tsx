@@ -42,15 +42,15 @@ interface MediaItem {
 // ─── Step type config ─────────────────────────────────────────────────────────
 
 const STEP_TYPES: { type: StepType; label: string; icon: any; color: string; hasContent: boolean; hasDelay: boolean }[] = [
-  { type: 'composing', label: 'Digitando...', icon: Keyboard,  color: '#8892b0', hasContent: false, hasDelay: true },
-  { type: 'text',      label: 'Texto',        icon: MessageSquare, color: '#00e5cc', hasContent: true,  hasDelay: true },
-  { type: 'delay',     label: 'Pausa',        icon: Clock,     color: '#f39c12', hasContent: false, hasDelay: true },
-  { type: 'recording', label: 'Gravando...',  icon: Radio,     color: '#e74c3c', hasContent: false, hasDelay: true },
-  { type: 'audio',     label: 'Áudio PTT',    icon: Mic,       color: '#9b59b6', hasContent: true,  hasDelay: true },
-  { type: 'image',     label: 'Imagem',       icon: Image,     color: '#3498db', hasContent: true,  hasDelay: true },
-  { type: 'video',     label: 'Vídeo',        icon: Video,     color: '#e67e22', hasContent: true,  hasDelay: true },
-  { type: 'document',  label: 'Documento',    icon: FileText,  color: '#e91e8c', hasContent: true,  hasDelay: true },
-  { type: 'react',     label: 'Reagir',       icon: Smile,     color: '#00ff88', hasContent: true,  hasDelay: true },
+  { type: 'composing', label: 'Digitando...', icon: Keyboard,  color: 'var(--muted-foreground)', hasContent: false, hasDelay: true },
+  { type: 'text',      label: 'Texto',        icon: MessageSquare, color: 'var(--primary)', hasContent: true,  hasDelay: true },
+  { type: 'delay',     label: 'Pausa',        icon: Clock,     color: 'var(--warning)', hasContent: false, hasDelay: true },
+  { type: 'recording', label: 'Gravando...',  icon: Radio,     color: 'var(--destructive)', hasContent: false, hasDelay: true },
+  { type: 'audio',     label: 'Áudio PTT',    icon: Mic,       color: 'var(--purple)', hasContent: true,  hasDelay: true },
+  { type: 'image',     label: 'Imagem',       icon: Image,     color: 'var(--info)', hasContent: true,  hasDelay: true },
+  { type: 'video',     label: 'Vídeo',        icon: Video,     color: 'var(--warning)', hasContent: true,  hasDelay: true },
+  { type: 'document',  label: 'Documento',    icon: FileText,  color: 'var(--purple)', hasContent: true,  hasDelay: true },
+  { type: 'react',     label: 'Reagir',       icon: Smile,     color: 'var(--primary)', hasContent: true,  hasDelay: true },
 ];
 
 const getStepConfig = (type: StepType) => STEP_TYPES.find(t => t.type === type) || STEP_TYPES[1];
@@ -626,7 +626,7 @@ export default function FlowBuilderView() {
                     >
                       <GripVertical size={16} />
                     </div>
-                    <div className="fb-step-icon" style={{ background: cfg.color + '20', color: cfg.color }}>
+                    <div className="fb-step-icon" style={{ background: `color-mix(in oklch, ${cfg.color} 12%, transparent)`, color: cfg.color }}>
                       <Icon size={16} />
                     </div>
                     <div className="fb-step-summary">
@@ -706,8 +706,8 @@ export default function FlowBuilderView() {
                                       fontSize: '1.5rem',
                                       padding: '8px',
                                       borderRadius: '50%',
-                                      border: step.content === emoji ? '2px solid #00e5cc' : '2px solid transparent',
-                                      background: step.content === emoji ? 'rgba(0, 229, 204, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                                      border: step.content === emoji ? '2px solid var(--primary)' : '2px solid transparent',
+                                      background: step.content === emoji ? 'color-mix(in oklch, var(--primary) 15%, transparent)' : 'color-mix(in oklch, var(--foreground) 5%, transparent)',
                                       cursor: 'pointer',
                                       transition: 'all 0.2s ease',
                                       transform: step.content === emoji ? 'scale(1.15)' : 'scale(1)',
@@ -727,7 +727,7 @@ export default function FlowBuilderView() {
                               </label>
 
                               {step.type === 'document' && (
-                                <p style={{ fontSize: '0.75rem', color: '#8892b0', margin: '0 0 8px 0' }}>
+                                <p style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', margin: '0 0 8px 0' }}>
                                   📎 Será enviado como arquivo anexo no WhatsApp.
                                 </p>
                               )}

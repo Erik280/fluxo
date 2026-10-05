@@ -4,12 +4,12 @@
 
 .media-library-root header h2 {
   margin: 0;
-  color: #00FF88;
+  color: var(--primary);
 }
 
 .media-library-root .btn-primary {
-  background-color: #00FF88;
-  color: #0A192F;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
@@ -23,8 +23,8 @@
 }
 
 .media-library-root .btn-primary:disabled {
-  background-color: #555;
-  color: #999;
+  background-color: var(--muted-foreground);
+  color: var(--muted-foreground);
   cursor: not-allowed;
 }
 

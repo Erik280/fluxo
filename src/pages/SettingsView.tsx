@@ -368,7 +368,7 @@ export default function SettingsView() {
                       <div style={{ marginTop: '20px' }}>
                         <button 
                           className="btn-primary" 
-                          style={{ backgroundColor: '#ff4444', border: 'none' }}
+                          style={{ backgroundColor: 'var(--destructive)', border: 'none' }}
                           onClick={async () => {
                             setLoadingQr(true);
                             await supabase.from('companies').update({
@@ -383,7 +383,7 @@ export default function SettingsView() {
                         >
                           Resetar Conexão Travada
                         </button>
-                        <p style={{ fontSize: '12px', marginTop: '5px', color: '#888' }}>Use isso apenas se o QR Code não quiser gerar de jeito nenhum.</p>
+                        <p style={{ fontSize: '12px', marginTop: '5px', color: 'var(--muted-foreground)' }}>Use isso apenas se o QR Code não quiser gerar de jeito nenhum.</p>
                       </div>
                     )}
                   </div>
@@ -391,13 +391,13 @@ export default function SettingsView() {
 
                 {connectionStatus === 'open' && (
                   <div className="connected-panel">
-                    <ShieldAlert size={48} color="#00FF88" />
+                    <ShieldAlert size={48} style={{ color: 'var(--primary)' }} />
                     <h4>Tudo certo!</h4>
                     <p>Seu WhatsApp está conectado e pronto para enviar/receber mensagens.</p>
                     
                     <button 
                       className="btn-primary" 
-                      style={{ backgroundColor: '#ff4444', border: 'none', marginTop: '20px' }}
+                      style={{ backgroundColor: 'var(--destructive)', border: 'none', marginTop: '20px' }}
                       onClick={async () => {
                         if (!company?.evolution_instance) return;
                         // Chama o backend para deletar da Evolution
@@ -490,7 +490,7 @@ export default function SettingsView() {
 
                 <div className="kb-form-box">
                   <h4><UploadCloud size={16} style={{marginRight: '8px'}} />Upload de PDF</h4>
-                  <p style={{fontSize: '13px', color: '#888', marginBottom: '10px'}}>
+                  <p style={{fontSize: '13px', color: 'var(--muted-foreground)', marginBottom: '10px'}}>
                     A IA vai ler o arquivo automaticamente e dividir em partes para facilitar a busca.
                   </p>
                   <input 
@@ -503,7 +503,7 @@ export default function SettingsView() {
                     className="btn-primary" 
                     onClick={handleAddKnowledgePdf}
                     disabled={knowledgeLoading || !pdfFile}
-                    style={{ marginTop: '10px', background: '#3b82f6', borderColor: '#3b82f6' }}
+                    style={{ marginTop: '10px', background: 'var(--info)', borderColor: 'var(--info)' }}
                   >
                     {knowledgeLoading ? 'Processando...' : 'Processar PDF'}
                   </button>

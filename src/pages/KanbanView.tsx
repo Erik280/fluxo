@@ -194,7 +194,7 @@ function StageModal({ stage, flows, companyId, companyTags, onClose, onSaved, on
             <div className="kb-trigger-toggle-row">
               <div>
                 <label className="kb-label-main">
-                  <Zap size={14} style={{ color: '#F59E0B', marginRight: 6 }} />
+                  <Zap size={14} style={{ color: 'var(--warning)', marginRight: 6 }} />
                   Ativar automação ao entrar nesta coluna?
                 </label>
                 <p className="kb-label-sub">O fluxo selecionado será disparado automaticamente após confirmação.</p>
@@ -264,9 +264,9 @@ function StageModal({ stage, flows, companyId, companyTags, onClose, onSaved, on
                       style={{
                         padding: '4px 12px',
                         borderRadius: '20px',
-                        border: `2px solid ${isSelected ? '#00E5CC' : 'rgba(255,255,255,0.15)'}`,
-                        background: isSelected ? 'rgba(0,229,204,0.15)' : 'rgba(255,255,255,0.04)',
-                        color: isSelected ? '#00E5CC' : '#8892b0',
+                        border: `2px solid ${isSelected ? 'var(--primary)' : 'color-mix(in oklch, var(--foreground) 15%, transparent)'}`,
+                        background: isSelected ? 'color-mix(in oklch, var(--primary) 15%, transparent)' : 'color-mix(in oklch, var(--foreground) 4%, transparent)',
+                        color: isSelected ? 'var(--primary)' : 'var(--muted-foreground)',
                         cursor: 'pointer',
                         fontSize: '0.8rem',
                         fontWeight: isSelected ? 600 : 400,
@@ -283,7 +283,7 @@ function StageModal({ stage, flows, companyId, companyTags, onClose, onSaved, on
                 })}
               </div>
               {selectedTagIds.length > 0 && (
-                <p style={{ fontSize: '0.75rem', color: '#00E5CC', marginTop: '8px' }}>
+                <p style={{ fontSize: '0.75rem', color: 'var(--primary)', marginTop: '8px' }}>
                   {selectedTagIds.length} tag(s) serão adicionadas automaticamente.
                 </p>
               )}
@@ -311,28 +311,28 @@ function StageModal({ stage, flows, companyId, companyTags, onClose, onSaved, on
 
           {/* Agente IA Autônomo */}
           <div className="kb-field" style={{
-            border: isAiManaged ? '1px solid rgba(168, 85, 247, 0.4)' : '1px solid rgba(255,255,255,0.06)',
+            border: isAiManaged ? '1px solid color-mix(in oklch, var(--purple) 40%, transparent)' : '1px solid color-mix(in oklch, var(--foreground) 6%, transparent)',
             borderRadius: '10px',
             padding: '14px',
-            background: isAiManaged ? 'rgba(168, 85, 247, 0.06)' : 'transparent',
+            background: isAiManaged ? 'color-mix(in oklch, var(--purple) 6%, transparent)' : 'transparent',
             transition: 'all 0.2s'
           }}>
             <div className="kb-trigger-toggle-row">
               <div>
                 <label className="kb-label-main">
-                  🤖 <span style={{ color: '#A855F7' }}>Agente IA Autônomo</span>
+                  🤖 <span style={{ color: 'var(--purple)' }}>Agente IA Autônomo</span>
                 </label>
                 <p className="kb-label-sub">Quando ativado, a IA responderá autonomamente todos os leads nesta coluna usando o LLM configurado.</p>
               </div>
               <button className={`kb-toggle-btn ${isAiManaged ? 'active' : ''}`}
-                style={isAiManaged ? { background: 'rgba(168,85,247,0.2)', borderColor: '#A855F7', color: '#A855F7' } : {}}
+                style={isAiManaged ? { background: 'color-mix(in oklch, var(--purple) 20%, transparent)', borderColor: 'var(--purple)', color: 'var(--purple)' } : {}}
                 onClick={() => setIsAiManaged((p: boolean) => !p)}>
                 {isAiManaged ? <><ToggleRight size={20} /> Ativo</> : <><ToggleLeft size={20} /> Desativado</>}
               </button>
             </div>
             {isAiManaged && (
               <div style={{ marginTop: '12px' }}>
-                <label style={{ fontSize: '0.8rem', color: '#a78bfa', display: 'block', marginBottom: '6px' }}>
+                <label style={{ fontSize: '0.8rem', color: 'var(--purple)', display: 'block', marginBottom: '6px' }}>
                   Instruções para a IA nesta etapa (contexto e objetivo)
                 </label>
                 <textarea
@@ -342,11 +342,11 @@ function StageModal({ stage, flows, companyId, companyTags, onClose, onSaved, on
                   rows={5}
                   style={{
                     width: '100%',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(168,85,247,0.3)',
+                    background: 'color-mix(in oklch, var(--foreground) 4%, transparent)',
+                    border: '1px solid color-mix(in oklch, var(--purple) 30%, transparent)',
                     borderRadius: '8px',
                     padding: '10px 12px',
-                    color: '#e6f1ff',
+                    color: 'var(--foreground)',
                     fontSize: '0.85rem',
                     resize: 'vertical',
                     outline: 'none',
@@ -793,7 +793,7 @@ export default function KanbanView() {
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#e6f1ff',
+                color: 'var(--foreground)',
                 width: '100%',
                 height: '100%',
                 outline: 'none',
@@ -801,9 +801,9 @@ export default function KanbanView() {
                 fontSize: '0.85rem'
               }}
             >
-              <option value="" style={{ background: '#0a192f', color: '#e6f1ff' }}>Todas as Tags</option>
+              <option value="" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>Todas as Tags</option>
               {companyTags.map(tag => (
-                <option key={tag.id} value={tag.id} style={{ background: '#0a192f', color: '#e6f1ff' }}>
+                <option key={tag.id} value={tag.id} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
                   {tag.name}
                 </option>
               ))}
@@ -820,20 +820,20 @@ export default function KanbanView() {
               gap: '6px',
               padding: '8px 16px',
               borderRadius: '8px',
-              border: `1px solid ${showUnreadOnly ? '#00E5CC' : 'rgba(255,255,255,0.12)'}`,
-              background: showUnreadOnly ? 'rgba(0,229,204,0.15)' : 'rgba(255,255,255,0.04)',
-              color: showUnreadOnly ? '#00E5CC' : '#8892b0',
+              border: `1px solid ${showUnreadOnly ? 'var(--primary)' : 'color-mix(in oklch, var(--foreground) 12%, transparent)'}`,
+              background: showUnreadOnly ? 'color-mix(in oklch, var(--primary) 15%, transparent)' : 'color-mix(in oklch, var(--foreground) 4%, transparent)',
+              color: showUnreadOnly ? 'var(--primary)' : 'var(--muted-foreground)',
               cursor: 'pointer',
               fontSize: '0.85rem',
               fontWeight: showUnreadOnly ? 600 : 400,
               transition: 'all 0.2s',
-              boxShadow: showUnreadOnly ? '0 0 12px rgba(0,229,204,0.25)' : 'none',
+              boxShadow: showUnreadOnly ? '0 0 12px color-mix(in oklch, var(--primary) 25%, transparent)' : 'none',
             }}
           >
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: showUnreadOnly ? '#00E5CC' : '#8892b0', flexShrink: 0, boxShadow: showUnreadOnly ? '0 0 6px #00E5CC' : 'none' }} />
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: showUnreadOnly ? 'var(--primary)' : 'var(--muted-foreground)', flexShrink: 0, boxShadow: showUnreadOnly ? '0 0 6px var(--primary)' : 'none' }} />
             Não Lidas
             {showUnreadOnly && (
-              <span style={{ background: '#00E5CC', color: '#000', fontSize: '0.7rem', fontWeight: 700, borderRadius: '10px', padding: '1px 6px' }}>
+              <span style={{ background: 'var(--primary)', color: 'var(--primary-foreground)', fontSize: '0.7rem', fontWeight: 700, borderRadius: '10px', padding: '1px 6px' }}>
                 {contacts.filter(c => (c.unread_count || 0) > 0).length}
               </span>
             )}
@@ -888,7 +888,7 @@ export default function KanbanView() {
                   if (draggedColIdx === null) handleStageDrop(e, 'unassigned');
                 }}
               >
-                <div className="column-header" style={{ borderTopColor: '#64748B' }}>
+                <div className="column-header" style={{ borderTopColor: 'var(--muted-foreground)' }}>
                   <div className="column-header-top">
                     <div className="column-title-row" style={{ paddingLeft: '8px' }}>
                       <h3>Sem Estágio</h3>
@@ -972,7 +972,7 @@ export default function KanbanView() {
                                     cancelFlow(contact.id);
                                   }}
                                 >
-                                  <Square size={10} fill="#ff4b4b" style={{ color: '#ff4b4b' }} />
+                                  <Square size={10} fill="currentColor" style={{ color: 'var(--destructive)' }} />
                                   <span>Parar Fluxo</span>
                                 </button>
                               </div>
@@ -984,12 +984,12 @@ export default function KanbanView() {
                           <div className="kanban-card-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
                             {contact.contact_tags.map(ct => ct.tags).filter(Boolean).map(tag => (
                               <span key={tag.id} className="kanban-tag-pill" style={{
-                                background: 'rgba(255, 255, 255, 0.08)',
-                                border: '1px solid rgba(255, 255, 255, 0.15)',
+                                background: 'color-mix(in oklch, var(--foreground) 8%, transparent)',
+                                border: '1px solid color-mix(in oklch, var(--foreground) 15%, transparent)',
                                 padding: '2px 6px',
                                 borderRadius: '3px',
                                 fontSize: '0.7rem',
-                                color: '#ccd6f6'
+                                color: 'var(--foreground)'
                               }}>
                                 {tag.name}
                               </span>
@@ -1165,9 +1165,9 @@ export default function KanbanView() {
                               e.stopPropagation();
                               cancelFlow(contact.id);
                             }}
-                            style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 6px', background: 'rgba(255, 75, 75, 0.15)', border: '1px solid rgba(255, 75, 75, 0.4)', borderRadius: '4px', color: '#ff4b4b', cursor: 'pointer', fontWeight: 600, fontSize: '0.7rem' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '2px 6px', background: 'color-mix(in oklch, var(--destructive) 15%, transparent)', border: '1px solid color-mix(in oklch, var(--destructive) 40%, transparent)', borderRadius: '4px', color: 'var(--destructive)', cursor: 'pointer', fontWeight: 600, fontSize: '0.7rem' }}
                           >
-                            <Square size={10} fill="#ff4b4b" style={{ color: '#ff4b4b' }} />
+                            <Square size={10} fill="currentColor" style={{ color: 'var(--destructive)' }} />
                             <span>Parar Fluxo</span>
                           </button>
                         </div>
@@ -1177,12 +1177,12 @@ export default function KanbanView() {
                         <div className="kanban-card-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
                           {contact.contact_tags.map(ct => ct.tags).filter(Boolean).map(tag => (
                             <span key={tag.id} className="kanban-tag-pill" style={{
-                              background: 'rgba(255, 255, 255, 0.08)',
-                              border: '1px solid rgba(255, 255, 255, 0.15)',
+                              background: 'color-mix(in oklch, var(--foreground) 8%, transparent)',
+                              border: '1px solid color-mix(in oklch, var(--foreground) 15%, transparent)',
                               padding: '2px 6px',
                               borderRadius: '3px',
                               fontSize: '0.7rem',
-                              color: '#ccd6f6'
+                              color: 'var(--foreground)'
                             }}>
                               {tag.name}
                             </span>
@@ -1226,12 +1226,12 @@ export default function KanbanView() {
       {isQuickChatOpen && selectedContact && (
         <div className="crm-modal-overlay" onClick={() => setIsQuickChatOpen(false)} style={{ zIndex: 10000 }}>
           <div className="crm-modal-content quick-chat-modal" onClick={e => e.stopPropagation()} style={{ padding: 0, height: '100%', maxHeight: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div className="quick-chat-header" style={{ padding: '12px 16px', borderBottom: '1px solid #233554', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+            <div className="quick-chat-header" style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
               <div className="quick-chat-user-info">
-                <h3 onClick={() => setShowCrmModal(true)} style={{ cursor: 'pointer', display: 'inline-block', color: '#e6f1ff', margin: 0, fontSize: '1rem' }}>
+                <h3 onClick={() => setShowCrmModal(true)} style={{ cursor: 'pointer', display: 'inline-block', color: 'var(--foreground)', margin: 0, fontSize: '1rem' }}>
                   {selectedContact.name || selectedContact.phone}
                 </h3>
-                {selectedContact.name && <div className="quick-chat-phone" style={{ color: '#8892b0', fontSize: '0.8rem' }}>{selectedContact.phone}</div>}
+                {selectedContact.name && <div className="quick-chat-phone" style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}>{selectedContact.phone}</div>}
               </div>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 {selectedContact.flow_current_flow_id && (
@@ -1240,14 +1240,14 @@ export default function KanbanView() {
                     onClick={() => cancelFlow(selectedContact.id)}
                     title="Parar envio automático de mensagens (Stop Fluxo)"
                   >
-                    <Square size={12} fill="#ff4b4b" style={{ color: '#ff4b4b' }} />
+                    <Square size={12} fill="currentColor" style={{ color: 'var(--destructive)' }} />
                     <span>Parar Fluxo</span>
                   </button>
                 )}
-                <button className="crm-btn" onClick={() => setShowCrmModal(true)} title="Abrir Detalhes do Lead (CRM)" style={{ background: 'transparent', border: 'none', color: '#8892b0', cursor: 'pointer', display: 'flex', padding: '4px' }}>
+                <button className="crm-btn" onClick={() => setShowCrmModal(true)} title="Abrir Detalhes do Lead (CRM)" style={{ background: 'transparent', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer', display: 'flex', padding: '4px' }}>
                   <FileText size={18} />
                 </button>
-                <button className="close-quick-chat" onClick={() => setIsQuickChatOpen(false)} style={{ background: 'transparent', border: 'none', color: '#8892b0', cursor: 'pointer', display: 'flex', padding: '4px' }}>
+                <button className="close-quick-chat" onClick={() => setIsQuickChatOpen(false)} style={{ background: 'transparent', border: 'none', color: 'var(--muted-foreground)', cursor: 'pointer', display: 'flex', padding: '4px' }}>
                   <X size={20} />
                 </button>
               </div>

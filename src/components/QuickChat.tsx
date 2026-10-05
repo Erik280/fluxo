@@ -564,9 +564,9 @@ export default function QuickChat({ contactId, companyId }: QuickChatProps) {
             target="_blank"
             rel="noopener noreferrer"
             className="pdf-bubble"
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'inherit', marginTop: '4px', textDecoration: 'none', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'inherit', marginTop: '4px', textDecoration: 'none', background: 'color-mix(in oklch, var(--foreground) 5%, transparent)', padding: '10px', borderRadius: '8px' }}
           >
-            <FileText size={28} className="pdf-icon" style={{ color: '#00E5CC' }} />
+            <FileText size={28} className="pdf-icon" style={{ color: 'var(--primary)' }} />
             <span className="pdf-name" style={{ fontSize: '0.9rem', flex: 1 }}>
               {(msg.content || '').replace(/^\[DOCUMENT\]\s*/i, '') || 'Documento'}
             </span>
@@ -578,7 +578,7 @@ export default function QuickChat({ contactId, companyId }: QuickChatProps) {
   };
 
   if (loading) {
-    return <div style={{ padding: '20px', color: '#8892b0' }}>Carregando histórico...</div>;
+    return <div style={{ padding: '20px', color: 'var(--muted-foreground)' }}>Carregando histórico...</div>;
   }
 
   return (
@@ -592,8 +592,8 @@ export default function QuickChat({ contactId, companyId }: QuickChatProps) {
         onDrop={handleDrop}
       >
         {isDragging && (
-          <div className="drag-overlay" style={{ position: 'absolute', inset: 0, background: 'rgba(0, 229, 204, 0.1)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, border: '2px dashed #00E5CC' }}>
-            <div style={{ textAlign: 'center', color: '#00E5CC' }}>
+          <div className="drag-overlay" style={{ position: 'absolute', inset: 0, background: 'color-mix(in oklch, var(--primary) 10%, transparent)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 5, border: '2px dashed var(--primary)' }}>
+            <div style={{ textAlign: 'center', color: 'var(--primary)' }}>
               <Plus size={48} />
               <p>Solte para enviar</p>
             </div>
@@ -624,7 +624,7 @@ export default function QuickChat({ contactId, companyId }: QuickChatProps) {
           </div>
         ))}
         {messages.length === 0 && (
-          <div style={{ textAlign: 'center', color: '#8892b0', marginTop: '20px' }}>
+          <div style={{ textAlign: 'center', color: 'var(--muted-foreground)', marginTop: '20px' }}>
             Nenhuma mensagem.
           </div>
         )}
@@ -633,20 +633,20 @@ export default function QuickChat({ contactId, companyId }: QuickChatProps) {
       
       <footer className="message-input-area" style={{ flexShrink: 0, padding: '10px 12px', paddingBottom: 'max(10px, env(safe-area-inset-bottom))' }}>
         {isRecording ? (
-          <div className="recording-bar" style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', background: 'rgba(255,255,255,0.05)', padding: '8px 12px', borderRadius: '12px' }}>
-            <button className="recording-cancel-btn" onClick={cancelRecording} style={{ background: 'transparent', border: 'none', color: '#ff6b6b', cursor: 'pointer' }}>
+          <div className="recording-bar" style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', background: 'color-mix(in oklch, var(--foreground) 5%, transparent)', padding: '8px 12px', borderRadius: '12px' }}>
+            <button className="recording-cancel-btn" onClick={cancelRecording} style={{ background: 'transparent', border: 'none', color: 'var(--destructive)', cursor: 'pointer' }}>
               <Trash2 size={18} />
             </button>
             <div className="recording-indicator" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="recording-dot" style={{ width: '8px', height: '8px', background: '#ff4b4b', borderRadius: '50%', animation: 'pulse 1s infinite' }}></span>
-              <span className="recording-timer" style={{ color: '#e6f1ff', fontSize: '0.9rem', fontVariantNumeric: 'tabular-nums' }}>{formatRecordingTime(recordingTime)}</span>
+              <span className="recording-dot" style={{ width: '8px', height: '8px', background: 'var(--destructive)', borderRadius: '50%', animation: 'pulse 1s infinite' }}></span>
+              <span className="recording-timer" style={{ color: 'var(--foreground)', fontSize: '0.9rem', fontVariantNumeric: 'tabular-nums' }}>{formatRecordingTime(recordingTime)}</span>
               <div className="recording-waveform" style={{ display: 'flex', alignItems: 'center', gap: '3px', height: '20px', flex: 1 }}>
                 {visualizerData.map((height, i) => (
-                  <span key={i} style={{ width: '3px', background: '#00E5CC', borderRadius: '2px', height: `${height}%`, transition: 'height 0.05s ease' }}></span>
+                  <span key={i} style={{ width: '3px', background: 'var(--primary)', borderRadius: '2px', height: `${height}%`, transition: 'height 0.05s ease' }}></span>
                 ))}
               </div>
             </div>
-            <button className="recording-send-btn" onClick={stopRecording} style={{ background: '#00E5CC', border: 'none', color: '#000', borderRadius: '50%', padding: '8px', cursor: 'pointer' }}>
+            <button className="recording-send-btn" onClick={stopRecording} style={{ background: 'var(--primary)', border: 'none', color: 'var(--primary-foreground)', borderRadius: '50%', padding: '8px', cursor: 'pointer' }}>
               <Send size={18} />
             </button>
           </div>
@@ -726,11 +726,11 @@ export default function QuickChat({ contactId, companyId }: QuickChatProps) {
         )}
 
         {showQRMenu && filteredQRs.length > 0 && (
-          <div className="qr-popup-menu" style={{ position: 'absolute', bottom: '100%', left: '12px', right: '12px', background: '#112240', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', marginBottom: '8px', maxHeight: '200px', overflowY: 'auto', zIndex: 10 }}>
+          <div className="qr-popup-menu" style={{ position: 'absolute', bottom: '100%', left: '12px', right: '12px', background: 'var(--card)', border: '1px solid color-mix(in oklch, var(--foreground) 10%, transparent)', borderRadius: '12px', marginBottom: '8px', maxHeight: '200px', overflowY: 'auto', zIndex: 10 }}>
             {filteredQRs.map(qr => (
-              <div key={qr.id} className="qr-popup-item" onClick={() => handleSelectQuickReply(qr)} style={{ padding: '10px 15px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', gap: '10px' }}>
-                <span style={{ color: '#00E5CC', fontWeight: 'bold' }}>/{qr.shortcut}</span>
-                <span style={{ color: '#8892b0', fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div key={qr.id} className="qr-popup-item" onClick={() => handleSelectQuickReply(qr)} style={{ padding: '10px 15px', cursor: 'pointer', borderBottom: '1px solid color-mix(in oklch, var(--foreground) 5%, transparent)', display: 'flex', gap: '10px' }}>
+                <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>/{qr.shortcut}</span>
+                <span style={{ color: 'var(--muted-foreground)', fontSize: '0.9rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {qr.media_url ? `[${(qr.media_type || 'MIDIA').toUpperCase()}] ${qr.content || qr.shortcut}` : qr.content}
                 </span>
               </div>
@@ -741,10 +741,10 @@ export default function QuickChat({ contactId, companyId }: QuickChatProps) {
 
       {showMediaModal && (
         <div className="media-modal-overlay" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div className="media-modal-content" style={{ background: '#0e1325', border: '1px solid rgba(0, 229, 204, 0.2)', padding: '24px', borderRadius: '16px', width: '100%', maxWidth: '800px', maxHeight: '80vh', overflowY: 'auto', color: '#e6f1ff', boxShadow: '0 24px 80px rgba(0,0,0,0.6)' }}>
+          <div className="media-modal-content" style={{ background: 'var(--card)', border: '1px solid color-mix(in oklch, var(--primary) 20%, transparent)', padding: '24px', borderRadius: '16px', width: '100%', maxWidth: '800px', maxHeight: '80vh', overflowY: 'auto', color: 'var(--foreground)', boxShadow: '0 24px 80px rgba(0,0,0,0.6)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', alignItems: 'center' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Biblioteca de Mídia</h2>
-              <button onClick={() => setShowMediaModal(false)} style={{ background: 'transparent', border: 'none', color: '#8892b0', fontSize: '24px', cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setShowMediaModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--muted-foreground)', fontSize: '24px', cursor: 'pointer' }}>✕</button>
             </div>
             
             {libraryMedia.length > 0 && (
@@ -754,32 +754,32 @@ export default function QuickChat({ contactId, companyId }: QuickChatProps) {
                   placeholder="Pesquisar por nome ou tipo de mídia..."
                   value={searchMediaLibraryQuery}
                   onChange={(e) => setSearchMediaLibraryQuery(e.target.value)}
-                  style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid rgba(0, 229, 204, 0.2)', background: 'rgba(255,255,255,0.03)', color: '#e6f1ff', outline: 'none' }}
+                  style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid color-mix(in oklch, var(--primary) 20%, transparent)', background: 'color-mix(in oklch, var(--foreground) 3%, transparent)', color: 'var(--foreground)', outline: 'none' }}
                 />
               </div>
             )}
             
             {libraryMedia.length === 0 ? (
-              <p style={{ color: '#8892b0', textAlign: 'center', padding: '40px' }}>Nenhuma mídia salva na biblioteca.</p>
+              <p style={{ color: 'var(--muted-foreground)', textAlign: 'center', padding: '40px' }}>Nenhuma mídia salva na biblioteca.</p>
             ) : libraryMedia.filter(m => m.name.toLowerCase().includes(searchMediaLibraryQuery.toLowerCase()) || m.media_type.toLowerCase().includes(searchMediaLibraryQuery.toLowerCase())).length === 0 ? (
-              <p style={{ color: '#8892b0', textAlign: 'center', padding: '40px' }}>Nenhuma mídia encontrada com esta pesquisa.</p>
+              <p style={{ color: 'var(--muted-foreground)', textAlign: 'center', padding: '40px' }}>Nenhuma mídia encontrada com esta pesquisa.</p>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '16px' }}>
                 {libraryMedia.filter(m => m.name.toLowerCase().includes(searchMediaLibraryQuery.toLowerCase()) || m.media_type.toLowerCase().includes(searchMediaLibraryQuery.toLowerCase())).map(media => (
-                  <div key={media.id} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', padding: '12px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <div style={{ height: '120px', background: '#070a16', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                  <div key={media.id} style={{ background: 'color-mix(in oklch, var(--foreground) 3%, transparent)', border: '1px solid color-mix(in oklch, var(--foreground) 6%, transparent)', padding: '12px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ height: '120px', background: 'var(--card)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                       {media.media_type === 'image' && <img src={media.url} alt={media.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-                      {media.media_type === 'audio' && <Mic size={32} style={{ color: '#00E5CC' }} />}
+                      {media.media_type === 'audio' && <Mic size={32} style={{ color: 'var(--primary)' }} />}
                       {media.media_type === 'video' && <video src={media.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-                      {media.media_type === 'document' && <FileText size={32} style={{ color: '#00E5CC' }} />}
+                      {media.media_type === 'document' && <FileText size={32} style={{ color: 'var(--primary)' }} />}
                     </div>
                     <div style={{ flex: 1 }}>
                       <p style={{ fontSize: '0.85rem', fontWeight: '600', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.name}</p>
-                      <span style={{ fontSize: '0.7rem', color: '#8892b0', textTransform: 'uppercase' }}>{media.media_type}</span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--muted-foreground)', textTransform: 'uppercase' }}>{media.media_type}</span>
                     </div>
                     <button 
                       onClick={() => handleSendLibraryMedia(media.id)}
-                      style={{ background: 'rgba(0, 229, 204, 0.1)', color: '#00E5CC', border: '1px solid rgba(0, 229, 204, 0.3)', padding: '8px', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem' }}
+                      style={{ background: 'color-mix(in oklch, var(--primary) 10%, transparent)', color: 'var(--primary)', border: '1px solid color-mix(in oklch, var(--primary) 30%, transparent)', padding: '8px', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem' }}
                     >
                       Enviar
                     </button>

@@ -191,7 +191,7 @@ export default function QuickRepliesView() {
     <div className="quick-replies-root">
       <header className="qr-header">
         <div className="qr-title">
-          <Zap size={24} color="#00E5CC" />
+          <Zap size={24} style={{ color: 'var(--primary)' }} />
           <h1>Respostas Rápidas</h1>
         </div>
         <button className="qr-add-btn" onClick={() => setShowModal(true)}>
@@ -205,7 +205,7 @@ export default function QuickRepliesView() {
           <div className="qr-empty">Carregando...</div>
         ) : replies.length === 0 ? (
           <div className="qr-empty">
-            <Zap size={48} color="#233554" />
+            <Zap size={48} style={{ color: 'var(--border)' }} />
             <h3>Nenhuma resposta rápida ainda</h3>
             <p>Crie atalhos para agilizar seu atendimento usando a barra "/".</p>
           </div>
@@ -222,13 +222,13 @@ export default function QuickRepliesView() {
                 <div className="qr-card-body">
                   {reply.media_url && reply.media_type ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%' }}>
-                      <span style={{ fontSize: '0.7rem', color: '#00E5CC', background: 'rgba(0, 229, 204, 0.1)', padding: '2px 6px', borderRadius: '4px', alignSelf: 'flex-start', fontWeight: 'bold' }}>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--primary)', background: 'color-mix(in oklch, var(--primary) 10%, transparent)', padding: '2px 6px', borderRadius: '4px', alignSelf: 'flex-start', fontWeight: 'bold' }}>
                         {reply.media_type.toUpperCase()}
                       </span>
-                      {reply.media_type === 'image' && <img src={reply.media_url} alt="preview" style={{ maxWidth: '100%', maxHeight: '80px', borderRadius: '4px', objectFit: 'contain', background: '#112240' }} />}
+                      {reply.media_type === 'image' && <img src={reply.media_url} alt="preview" style={{ maxWidth: '100%', maxHeight: '80px', borderRadius: '4px', objectFit: 'contain', background: 'var(--card)' }} />}
                       {reply.media_type === 'audio' && <audio src={reply.media_url} controls style={{ width: '100%', height: '32px' }} />}
                       {reply.media_type === 'video' && <video src={reply.media_url} controls style={{ maxWidth: '100%', maxHeight: '80px' }} />}
-                      {reply.media_type === 'document' && <span style={{ color: '#8892b0', fontSize: '0.8rem' }}>📄 {reply.content.replace(/^\[DOCUMENT\]\s*/i, '')}</span>}
+                      {reply.media_type === 'document' && <span style={{ color: 'var(--muted-foreground)', fontSize: '0.8rem' }}>📄 {reply.content.replace(/^\[DOCUMENT\]\s*/i, '')}</span>}
                     </div>
                   ) : (
                     reply.content
@@ -250,11 +250,11 @@ export default function QuickRepliesView() {
             <div className="schedule-modal-body">
               <div className="crm-field">
                 <label>Atalho (ex: pix)</label>
-                <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '0 10px' }}>
-                  <span style={{ color: '#00E5CC', fontWeight: 'bold' }}>/</span>
+                <div style={{ display: 'flex', alignItems: 'center', background: 'color-mix(in oklch, var(--foreground) 3%, transparent)', border: '1px solid color-mix(in oklch, var(--foreground) 10%, transparent)', borderRadius: '8px', padding: '0 10px' }}>
+                  <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>/</span>
                   <input 
                     type="text" 
-                    style={{ flex: 1, background: 'transparent', border: 'none', padding: '10px', color: '#e6f1ff', outline: 'none' }}
+                    style={{ flex: 1, background: 'transparent', border: 'none', padding: '10px', color: 'var(--foreground)', outline: 'none' }}
                     value={newShortcut}
                     onChange={e => setNewShortcut(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
                     placeholder="pix"
@@ -268,9 +268,9 @@ export default function QuickRepliesView() {
                     flex: 1,
                     padding: '8px',
                     borderRadius: '6px',
-                    border: '1px solid rgba(0, 229, 204, 0.2)',
-                    background: replyMode === 'text' ? 'rgba(0, 229, 204, 0.1)' : 'transparent',
-                    color: replyMode === 'text' ? '#00e5cc' : '#8892b0',
+                    border: '1px solid color-mix(in oklch, var(--primary) 20%, transparent)',
+                    background: replyMode === 'text' ? 'color-mix(in oklch, var(--primary) 10%, transparent)' : 'transparent',
+                    color: replyMode === 'text' ? 'var(--primary)' : 'var(--muted-foreground)',
                     cursor: 'pointer',
                     fontWeight: 'bold',
                     fontSize: '0.85rem'
@@ -285,9 +285,9 @@ export default function QuickRepliesView() {
                     flex: 1,
                     padding: '8px',
                     borderRadius: '6px',
-                    border: '1px solid rgba(0, 229, 204, 0.2)',
-                    background: replyMode === 'media' ? 'rgba(0, 229, 204, 0.1)' : 'transparent',
-                    color: replyMode === 'media' ? '#00e5cc' : '#8892b0',
+                    border: '1px solid color-mix(in oklch, var(--primary) 20%, transparent)',
+                    background: replyMode === 'media' ? 'color-mix(in oklch, var(--primary) 10%, transparent)' : 'transparent',
+                    color: replyMode === 'media' ? 'var(--primary)' : 'var(--muted-foreground)',
                     cursor: 'pointer',
                     fontWeight: 'bold',
                     fontSize: '0.85rem'
@@ -313,7 +313,7 @@ export default function QuickRepliesView() {
                 <div className="crm-field">
                   <label>Selecionar Mídia da Biblioteca</label>
                   {libraryMedia.length === 0 ? (
-                    <div style={{ color: '#8892b0', fontSize: '0.85rem', padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px dashed rgba(255,255,255,0.1)', textAlign: 'center' }}>
+                    <div style={{ color: 'var(--muted-foreground)', fontSize: '0.85rem', padding: '10px', background: 'color-mix(in oklch, var(--foreground) 2%, transparent)', borderRadius: '8px', border: '1px dashed color-mix(in oklch, var(--foreground) 10%, transparent)', textAlign: 'center' }}>
                       Nenhuma mídia encontrada na biblioteca. Cadastre mídias primeiro na aba Biblioteca.
                     </div>
                   ) : (
@@ -321,11 +321,11 @@ export default function QuickRepliesView() {
                       className="crm-select"
                       style={{
                         width: '100%',
-                        background: '#112240',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        background: 'var(--card)',
+                        border: '1px solid color-mix(in oklch, var(--foreground) 10%, transparent)',
                         borderRadius: '8px',
                         padding: '10px',
-                        color: '#e6f1ff',
+                        color: 'var(--foreground)',
                         outline: 'none',
                         cursor: 'pointer'
                       }}

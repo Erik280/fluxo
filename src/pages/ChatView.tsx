@@ -1297,9 +1297,9 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
               onClick={() => setShowUnreadOnly(!showUnreadOnly)} 
               title="Filtrar Não Lidas"
               style={{
-                background: showUnreadOnly ? 'rgba(0, 229, 204, 0.2)' : 'transparent',
-                border: `1px solid ${showUnreadOnly ? '#00E5CC' : 'rgba(255,255,255,0.1)'}`,
-                color: showUnreadOnly ? '#00E5CC' : '#8892b0',
+                background: showUnreadOnly ? 'color-mix(in oklch, var(--primary) 20%, transparent)' : 'transparent',
+                border: `1px solid ${showUnreadOnly ? 'var(--primary)' : 'color-mix(in oklch, var(--foreground) 10%, transparent)'}`,
+                color: showUnreadOnly ? 'var(--primary)' : 'var(--muted-foreground)',
                 borderRadius: '8px',
                 padding: '8px',
                 cursor: 'pointer',
@@ -1380,7 +1380,7 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
 
             if (filtered.length === 0) {
               return (
-                <div style={{ padding: '20px', textAlign: 'center', color: '#8892b0', fontSize: '0.875rem' }}>
+                <div style={{ padding: '20px', textAlign: 'center', color: 'var(--muted-foreground)', fontSize: '0.875rem' }}>
                   {q ? `Nenhum resultado para "${q}"` : 'Nenhuma conversa ainda.'}
                 </div>
               );
@@ -1442,16 +1442,16 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
                 <div className="chat-preview">{contact.phone}</div>
                 <div className="chat-tags">
                   <span className="tag" style={{ 
-                    background: contact.chat_status === 'bot' ? '#00E5CC20' : '#ff6b6b20', 
-                    color: contact.chat_status === 'bot' ? '#00E5CC' : '#ff6b6b' 
+                    background: contact.chat_status === 'bot' ? 'color-mix(in oklch, var(--primary) 13%, transparent)' : 'color-mix(in oklch, var(--destructive) 13%, transparent)', 
+                    color: contact.chat_status === 'bot' ? 'var(--primary)' : 'var(--destructive)' 
                   }}>
                     {contact.chat_status === 'bot' ? 'Bot Ativo' : 'Humano'}
                   </span>
                   {contact.contact_tags?.map((ct: any) => ct.tags).filter(Boolean).map((tag: any) => (
                     <span key={tag.id} className="tag" style={{
-                      background: 'rgba(255, 255, 255, 0.08)',
-                      border: '1px solid rgba(255, 255, 255, 0.15)',
-                      color: '#e6f1ff'
+                      background: 'color-mix(in oklch, var(--foreground) 8%, transparent)',
+                      border: '1px solid color-mix(in oklch, var(--foreground) 15%, transparent)',
+                      color: 'var(--foreground)'
                     }}>
                       {tag.name}
                     </span>
@@ -1494,7 +1494,7 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
                 <h3 onClick={() => setShowCrmModal(true)} style={{ cursor: 'pointer', display: 'inline-block' }} title="Abrir Detalhes do Lead (CRM)">
                   {selectedContact.name || selectedContact.phone}
                 </h3>
-                <span className="status" style={{ color: selectedContact.chat_status === 'bot' ? '#00FF88' : '#ff6b6b', display: 'block' }}>
+                <span className="status" style={{ color: selectedContact.chat_status === 'bot' ? 'var(--primary)' : 'var(--destructive)', display: 'block' }}>
                   {selectedContact.chat_status === 'bot' ? 'Online (Bot Ativo)' : 'Atendimento Humano'}
                 </span>
               </div>
@@ -1505,7 +1505,7 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
                   onClick={() => handleCancelFlow(selectedContact.id)}
                   title="Parar envio automático de mensagens (Stop Fluxo)"
                 >
-                  <Square size={12} fill="#ff4b4b" style={{ color: '#ff4b4b' }} />
+                  <Square size={12} fill="currentColor" style={{ color: 'var(--destructive)' }} />
                   <span>Parar Fluxo</span>
                 </button>
               )}
@@ -1878,10 +1878,10 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
 
       {showMediaModal && (
         <div className="media-modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="media-modal-content" style={{ background: '#112240', padding: '20px', borderRadius: '8px', width: '80%', maxWidth: '800px', maxHeight: '80vh', overflowY: 'auto', color: '#e6f1ff' }}>
+          <div className="media-modal-content" style={{ background: 'var(--card)', padding: '20px', borderRadius: '8px', width: '80%', maxWidth: '800px', maxHeight: '80vh', overflowY: 'auto', color: 'var(--foreground)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
               <h2>Biblioteca de Mídia</h2>
-              <button onClick={() => setShowMediaModal(false)} style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+              <button onClick={() => setShowMediaModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '20px', cursor: 'pointer' }}>✕</button>
             </div>
             
             {libraryMedia.length > 0 && (
@@ -1891,7 +1891,7 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
                   placeholder="Pesquisar por nome ou tipo de mídia..."
                   value={searchMediaLibraryQuery}
                   onChange={(e) => setSearchMediaLibraryQuery(e.target.value)}
-                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #233554', background: '#0a192f', color: '#e6f1ff', outline: 'none' }}
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--foreground)', outline: 'none' }}
                 />
               </div>
             )}
@@ -1903,11 +1903,11 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '15px' }}>
                 {libraryMedia.filter(m => m.name.toLowerCase().includes(searchMediaLibraryQuery.toLowerCase()) || m.media_type.toLowerCase().includes(searchMediaLibraryQuery.toLowerCase())).map(media => (
-                  <div key={media.id} style={{ background: '#0a192f', padding: '10px', borderRadius: '6px', textAlign: 'center', position: 'relative' }}>
+                  <div key={media.id} style={{ background: 'var(--background)', padding: '10px', borderRadius: '6px', textAlign: 'center', position: 'relative' }}>
                     <p style={{ margin: '0 0 10px 0', fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{media.name}</p>
-                    <span style={{ fontSize: '10px', background: '#233554', padding: '2px 4px', borderRadius: '4px', marginBottom: '10px', display: 'inline-block' }}>{media.media_type.toUpperCase()}</span>
+                    <span style={{ fontSize: '10px', background: 'var(--border)', padding: '2px 4px', borderRadius: '4px', marginBottom: '10px', display: 'inline-block' }}>{media.media_type.toUpperCase()}</span>
                     
-                    <div style={{ marginTop: '10px', marginBottom: '15px', minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#112240', borderRadius: '4px', overflow: 'hidden' }}>
+                    <div style={{ marginTop: '10px', marginBottom: '15px', minHeight: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--card)', borderRadius: '4px', overflow: 'hidden' }}>
                       {media.media_type === 'image' && <img src={media.url} alt={media.name} style={{ maxWidth: '100%', maxHeight: '100px' }} />}
                       {media.media_type === 'audio' && <audio src={media.url} controls style={{ width: '90%' }} />}
                       {media.media_type === 'video' && <video src={media.url} controls style={{ width: '100%', maxHeight: '100px' }} />}
@@ -1915,7 +1915,7 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
 
                     <button 
                       onClick={() => handleSendLibraryMedia(media.id)}
-                      style={{ background: '#00e5cc', color: '#000', border: 'none', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}
+                      style={{ background: 'var(--primary)', color: 'var(--primary-foreground)', border: 'none', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', width: '100%' }}
                     >
                       Enviar
                     </button>
@@ -1962,7 +1962,7 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
                   onChange={e => setNewChatPhone(e.target.value)}
                   placeholder="Ex: 5511999999999"
                 />
-                <small style={{ color: '#8892b0', fontSize: '0.75rem', marginTop: '4px', display: 'block' }}>
+                <small style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem', marginTop: '4px', display: 'block' }}>
                   Use o formato com DDI e DDD (ex: 55119...)
                 </small>
               </div>
@@ -1991,11 +1991,11 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
             <div className="schedule-modal-body">
               <div className="crm-field">
                 <label>Atalho</label>
-                <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '0 10px' }}>
-                  <span style={{ color: '#00E5CC', fontWeight: 'bold' }}>/</span>
+                <div style={{ display: 'flex', alignItems: 'center', background: 'color-mix(in oklch, var(--foreground) 3%, transparent)', border: '1px solid color-mix(in oklch, var(--foreground) 10%, transparent)', borderRadius: '8px', padding: '0 10px' }}>
+                  <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>/</span>
                   <input 
                     type="text" 
-                    style={{ flex: 1, background: 'transparent', border: 'none', padding: '10px', color: '#e6f1ff', outline: 'none' }}
+                    style={{ flex: 1, background: 'transparent', border: 'none', padding: '10px', color: 'var(--foreground)', outline: 'none' }}
                     value={saveQRShortcut} 
                     onChange={e => setSaveQRShortcut(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
                     placeholder="exemplo"
@@ -2005,8 +2005,8 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
               <div className="crm-field">
                 <label>Conteúdo</label>
                 {saveQRModal.media_url && saveQRModal.media_type ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '8px', fontSize: '0.85rem' }}>
-                    <span style={{ fontSize: '0.75rem', background: '#233554', padding: '2px 6px', borderRadius: '4px', alignSelf: 'flex-start', color: '#00E5CC', fontWeight: 'bold' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: 'color-mix(in oklch, var(--foreground) 2%, transparent)', padding: '10px', borderRadius: '8px', fontSize: '0.85rem' }}>
+                    <span style={{ fontSize: '0.75rem', background: 'var(--border)', padding: '2px 6px', borderRadius: '4px', alignSelf: 'flex-start', color: 'var(--primary)', fontWeight: 'bold' }}>
                       MÍDIA: {saveQRModal.media_type.toUpperCase()}
                     </span>
                     {saveQRModal.media_type === 'image' && (
@@ -2019,11 +2019,11 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
                       <video src={saveQRModal.media_url} controls style={{ maxWidth: '100%', maxHeight: '100px' }} />
                     )}
                     {saveQRModal.media_type === 'document' && (
-                      <span style={{ color: '#8892b0' }}>📄 {saveQRModal.content.replace(/^\[DOCUMENT\]\s*/i, '') || 'Documento'}</span>
+                      <span style={{ color: 'var(--muted-foreground)' }}>📄 {saveQRModal.content.replace(/^\[DOCUMENT\]\s*/i, '') || 'Documento'}</span>
                     )}
                   </div>
                 ) : (
-                  <div style={{ background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '8px', fontSize: '0.85rem', color: '#8892b0', maxHeight: '100px', overflowY: 'auto' }}>
+                  <div style={{ background: 'color-mix(in oklch, var(--foreground) 2%, transparent)', padding: '10px', borderRadius: '8px', fontSize: '0.85rem', color: 'var(--muted-foreground)', maxHeight: '100px', overflowY: 'auto' }}>
                     {saveQRModal.content}
                   </div>
                 )}
@@ -2045,16 +2045,16 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
           <div className="schedule-modal-content" style={{ maxWidth: '480px' }}>
             <div className="schedule-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Forward size={18} style={{ color: '#00E5CC' }} />
+                <Forward size={18} style={{ color: 'var(--primary)' }} />
                 <h2>Encaminhar mensagem para</h2>
               </div>
               <button className="close-btn" onClick={() => setForwardMsg(null)}>✕</button>
             </div>
 
             {/* Preview da mensagem a encaminhar */}
-            <div style={{ margin: '0 20px 0', padding: '10px 14px', background: 'rgba(0,229,204,0.05)', border: '1px solid rgba(0,229,204,0.15)', borderRadius: '8px', fontSize: '0.82rem', color: '#8892b0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Forward size={12} style={{ color: '#00E5CC', flexShrink: 0 }} />
-              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: '#ccd6f6' }}>
+            <div style={{ margin: '0 20px 0', padding: '10px 14px', background: 'color-mix(in oklch, var(--primary) 5%, transparent)', border: '1px solid color-mix(in oklch, var(--primary) 15%, transparent)', borderRadius: '8px', fontSize: '0.82rem', color: 'var(--muted-foreground)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Forward size={12} style={{ color: 'var(--primary)', flexShrink: 0 }} />
+              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--foreground)' }}>
                 {forwardMsg.media_type ? `[${forwardMsg.media_type.toUpperCase()}]` : ''} {forwardMsg.content || 'Mídia'}
               </span>
             </div>
@@ -2062,7 +2062,7 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
             <div className="schedule-modal-body" style={{ padding: '12px 20px' }}>
               {/* Search */}
               <div style={{ position: 'relative', marginBottom: '12px' }}>
-                <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#8892b0', pointerEvents: 'none' }} />
+                <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted-foreground)', pointerEvents: 'none' }} />
                 <input
                   type="text"
                   placeholder="Pesquisar nome ou número..."
@@ -2076,7 +2076,7 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
 
               {/* Selected count badge */}
               {forwardSelected.length > 0 && (
-                <div style={{ marginBottom: '8px', fontSize: '0.78rem', color: '#00E5CC', fontWeight: 500 }}>
+                <div style={{ marginBottom: '8px', fontSize: '0.78rem', color: 'var(--primary)', fontWeight: 500 }}>
                   {forwardSelected.length} conversa(s) selecionada(s)
                 </div>
               )}
@@ -2099,27 +2099,27 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
                         style={{
                           display: 'flex', alignItems: 'center', gap: '12px',
                           padding: '9px 10px', borderRadius: '8px', cursor: 'pointer',
-                          background: isSelected ? 'rgba(0,229,204,0.08)' : 'transparent',
-                          border: `1px solid ${isSelected ? 'rgba(0,229,204,0.25)' : 'transparent'}`,
+                          background: isSelected ? 'color-mix(in oklch, var(--primary) 8%, transparent)' : 'transparent',
+                          border: `1px solid ${isSelected ? 'color-mix(in oklch, var(--primary) 25%, transparent)' : 'transparent'}`,
                           transition: 'all 0.15s'
                         }}
                       >
                         {/* Checkbox */}
                         <div style={{
                           width: '20px', height: '20px', borderRadius: '50%', flexShrink: 0,
-                          border: `2px solid ${isSelected ? '#00E5CC' : '#8892b0'}`,
-                          background: isSelected ? '#00E5CC' : 'transparent',
+                          border: `2px solid ${isSelected ? 'var(--primary)' : 'var(--muted-foreground)'}`,
+                          background: isSelected ? 'var(--primary)' : 'transparent',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           transition: 'all 0.15s'
                         }}>
-                          {isSelected && <Check size={11} color="#0a192f" strokeWidth={3} />}
+                          {isSelected && <Check size={11} style={{ color: 'var(--primary-foreground)' }} strokeWidth={3} />}
                         </div>
                         {/* Avatar */}
                         <div style={{
                           width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0, overflow: 'hidden',
-                          background: 'linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,229,204,0.2))',
+                          background: 'linear-gradient(135deg, color-mix(in oklch, var(--primary) 20%, transparent), color-mix(in oklch, var(--primary) 20%, transparent))',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          color: '#00FF88', fontWeight: 600, fontSize: '0.85rem'
+                          color: 'var(--primary)', fontWeight: 600, fontSize: '0.85rem'
                         }}>
                           {c.avatar_url
                             ? <img src={c.avatar_url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
@@ -2127,10 +2127,10 @@ export default function ChatView({ activeChatParam }: ChatViewProps = {}) {
                         </div>
                         {/* Info */}
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ color: '#e6f1ff', fontSize: '0.9rem', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          <div style={{ color: 'var(--foreground)', fontSize: '0.9rem', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                             {c.name || c.phone}
                           </div>
-                          {c.name && <div style={{ color: '#8892b0', fontSize: '0.72rem' }}>{c.phone}</div>}
+                          {c.name && <div style={{ color: 'var(--muted-foreground)', fontSize: '0.72rem' }}>{c.phone}</div>}
                         </div>
                       </div>
                     );

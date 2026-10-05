@@ -31,11 +31,11 @@ interface Campaign {
 }
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  draft:     { label: 'Rascunho',  color: '#8892b0' },
-  scheduled: { label: 'Agendada',  color: '#f39c12' },
-  running:   { label: 'Enviando',  color: '#00e5cc' },
-  completed: { label: 'Concluída', color: '#00ff88' },
-  cancelled: { label: 'Cancelada', color: '#e74c3c' },
+  draft:     { label: 'Rascunho',  color: 'var(--muted-foreground)' },
+  scheduled: { label: 'Agendada',  color: 'var(--warning)' },
+  running:   { label: 'Enviando',  color: 'var(--primary)' },
+  completed: { label: 'Concluída', color: 'var(--primary)' },
+  cancelled: { label: 'Cancelada', color: 'var(--destructive)' },
 };
 
 export default function CampaignView() {
@@ -178,7 +178,7 @@ export default function CampaignView() {
                 <button
                   key={tag.id}
                   className={`cv-tag-btn ${form.target_tag_ids.includes(tag.id) ? 'selected' : ''}`}
-                  style={{ borderColor: tag.color, color: form.target_tag_ids.includes(tag.id) ? '#0a192f' : tag.color, background: form.target_tag_ids.includes(tag.id) ? tag.color : 'transparent' }}
+                  style={{ borderColor: tag.color, color: form.target_tag_ids.includes(tag.id) ? 'var(--background)' : tag.color, background: form.target_tag_ids.includes(tag.id) ? tag.color : 'transparent' }}
                   onClick={() => toggleTag(tag.id)}
                 >
                   {tag.name}
@@ -257,7 +257,7 @@ export default function CampaignView() {
       {/* Campaign List */}
       <div className="cv-list">
         {campaigns.map(c => {
-          const st = STATUS_LABEL[c.status] || { label: c.status, color: '#8892b0' };
+          const st = STATUS_LABEL[c.status] || { label: c.status, color: 'var(--muted-foreground)' };
           const campaignTags = tags.filter(t => (c.target_tag_ids || []).includes(t.id));
           return (
             <div key={c.id} className="cv-card">

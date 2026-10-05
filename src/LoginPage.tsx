@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import { supabase } from './supabaseClient';
+import ThemeToggle from './components/ThemeToggle';
 
 // --- Sub-components ---
 
@@ -31,10 +32,12 @@ function ParticleCanvas() {
     }));
 
     const CONN_DIST = 130;
-    const GREEN  = '0,255,136';
-    const CYAN   = '0,229,204';
+    const readToken = (name: string) =>
+      getComputedStyle(document.documentElement).getPropertyValue(name).trim() || 'gray';
 
     const draw = () => {
+      const PRIMARY = readToken('--primary');
+      const ACCENT  = readToken('--chart-3');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < dots.length; i++) {
         const d = dots[i];
@@ -44,7 +47,8 @@ function ParticleCanvas() {
 
         ctx.beginPath();
         ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${i % 2 === 0 ? GREEN : CYAN},${d.alpha})`;
+        ctx.globalAlpha = d.alpha;
+        ctx.fillStyle = i % 2 === 0 ? PRIMARY : ACCENT;
         ctx.fill();
 
         for (let j = i + 1; j < dots.length; j++) {
@@ -55,12 +59,14 @@ function ParticleCanvas() {
             ctx.beginPath();
             ctx.moveTo(d.x, d.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(${GREEN},${opacity})`;
+            ctx.globalAlpha = opacity;
+            ctx.strokeStyle = PRIMARY;
             ctx.lineWidth = 0.7;
             ctx.stroke();
           }
         }
       }
+      ctx.globalAlpha = 1;
       animId = requestAnimationFrame(draw);
     };
     draw();
@@ -173,12 +179,12 @@ export default function LoginPage() {
                 <path d="M14 20c0-3.3 2.7-6 6-6s6 2.7 6 6c0 2.3-1.3 4.3-3.2 5.4L24 29h-8l1.2-3.6C15.3 24.3 14 22.3 14 20z" fill="url(#gG2_load)"/>
                 <defs>
                   <linearGradient id="gG_load" x1="3" y1="3" x2="37" y2="37" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#00FF88"/>
-                    <stop offset="100%" stopColor="#00E5CC"/>
+                    <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
+                    <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
                   </linearGradient>
                   <linearGradient id="gG2_load" x1="14" y1="14" x2="26" y2="30" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stopColor="#00FF88"/>
-                    <stop offset="100%" stopColor="#00E5CC"/>
+                    <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
+                    <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
                   </linearGradient>
                 </defs>
               </svg>
@@ -188,7 +194,7 @@ export default function LoginPage() {
             </h1>
             <p className="login-subtitle">Verificando sessão ativa...</p>
           </header>
-          <span className="spinner" style={{ width: '28px', height: '28px', borderColor: 'rgba(0, 255, 136, 0.2)', borderTopColor: '#00FF88' }} aria-label="Verificando conexão…" />
+          <span className="spinner" style={{ width: '28px', height: '28px', borderColor: 'color-mix(in oklch, var(--primary) 20%, transparent)', borderTopColor: 'var(--primary)' }} aria-label="Verificando conexão…" />
         </main>
       </div>
     );
@@ -196,6 +202,7 @@ export default function LoginPage() {
 
   return (
     <div className="login-root">
+      <ThemeToggle className="login-theme-toggle" />
       <ParticleCanvas />
 
       {/* Ambient blobs */}
@@ -211,12 +218,12 @@ export default function LoginPage() {
               <path d="M14 20c0-3.3 2.7-6 6-6s6 2.7 6 6c0 2.3-1.3 4.3-3.2 5.4L24 29h-8l1.2-3.6C15.3 24.3 14 22.3 14 20z" fill="url(#gG2)"/>
               <defs>
                 <linearGradient id="gG" x1="3" y1="3" x2="37" y2="37" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#00FF88"/>
-                  <stop offset="100%" stopColor="#00E5CC"/>
+                  <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
+                  <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
                 </linearGradient>
                 <linearGradient id="gG2" x1="14" y1="14" x2="26" y2="30" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#00FF88"/>
-                  <stop offset="100%" stopColor="#00E5CC"/>
+                  <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
+                  <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
                 </linearGradient>
               </defs>
             </svg>

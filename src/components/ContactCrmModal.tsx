@@ -332,11 +332,11 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                 alignItems: 'center',
                 gap: '6px',
                 margin: '8px auto 0',
-                background: copied ? 'rgba(0, 255, 136, 0.12)' : 'rgba(255, 255, 255, 0.04)',
-                border: `1px solid ${copied ? 'rgba(0, 255, 136, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
+                background: copied ? 'color-mix(in oklch, var(--primary) 12%, transparent)' : 'color-mix(in oklch, var(--foreground) 4%, transparent)',
+                border: `1px solid ${copied ? 'color-mix(in oklch, var(--primary) 40%, transparent)' : 'color-mix(in oklch, var(--foreground) 10%, transparent)'}`,
                 borderRadius: '20px',
                 padding: '5px 14px',
-                color: copied ? '#00FF88' : '#8892b0',
+                color: copied ? 'var(--primary)' : 'var(--muted-foreground)',
                 fontSize: '0.78rem',
                 fontWeight: 500,
                 cursor: 'pointer',
@@ -363,9 +363,9 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                 style={{
                   width: '100%',
                   marginTop: '10px',
-                  background: 'rgba(255, 75, 75, 0.15)',
-                  color: '#ff4b4b',
-                  border: '1px solid rgba(255, 75, 75, 0.4)',
+                  background: 'color-mix(in oklch, var(--destructive) 15%, transparent)',
+                  color: 'var(--destructive)',
+                  border: '1px solid color-mix(in oklch, var(--destructive) 40%, transparent)',
                   padding: '10px 16px',
                   borderRadius: '8px',
                   cursor: 'pointer',
@@ -375,10 +375,10 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                   justifyContent: 'center',
                   gap: '8px',
                   fontSize: '0.85rem',
-                  boxShadow: '0 0 12px rgba(255, 75, 75, 0.25)',
+                  boxShadow: '0 0 12px color-mix(in oklch, var(--destructive) 25%, transparent)',
                 }}
               >
-                <Square size={13} fill="#ff4b4b" style={{ color: '#ff4b4b' }} />
+                <Square size={13} fill="currentColor" style={{ color: 'var(--destructive)' }} />
                 <span>Parar Fluxo (Stop Fluxo)</span>
               </button>
             )}
@@ -393,11 +393,11 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
-                background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
-                border: '1px solid rgba(99, 102, 241, 0.4)',
+                background: 'linear-gradient(135deg, color-mix(in oklch, var(--purple) 15%, transparent) 0%, color-mix(in oklch, var(--purple) 15%, transparent) 100%)',
+                border: '1px solid color-mix(in oklch, var(--purple) 40%, transparent)',
                 borderRadius: '8px',
                 padding: '10px 16px',
-                color: '#a78bfa',
+                color: 'var(--purple)',
                 fontSize: '0.85rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -405,14 +405,14 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                 letterSpacing: '0.04em',
               }}
               onMouseEnter={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(135deg, rgba(99, 102, 241, 0.28) 0%, rgba(139, 92, 246, 0.28) 100%)';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(167, 139, 250, 0.7)';
-                (e.currentTarget as HTMLButtonElement).style.color = '#c4b5fd';
+                (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(135deg, color-mix(in oklch, var(--purple) 28%, transparent) 0%, color-mix(in oklch, var(--purple) 28%, transparent) 100%)';
+                (e.currentTarget as HTMLButtonElement).style.borderColor = 'color-mix(in oklch, var(--purple) 70%, transparent)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--purple)';
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(99, 102, 241, 0.4)';
-                (e.currentTarget as HTMLButtonElement).style.color = '#a78bfa';
+                (e.currentTarget as HTMLButtonElement).style.background = 'linear-gradient(135deg, color-mix(in oklch, var(--purple) 15%, transparent) 0%, color-mix(in oklch, var(--purple) 15%, transparent) 100%)';
+                (e.currentTarget as HTMLButtonElement).style.borderColor = 'color-mix(in oklch, var(--purple) 40%, transparent)';
+                (e.currentTarget as HTMLButtonElement).style.color = 'var(--purple)';
               }}
             >
               <Zap size={15} />
@@ -474,23 +474,23 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                 <div className="crm-tags-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '8px', minHeight: '24px', alignItems: 'center' }}>
                   {selectedTags.map(tag => (
                     <span key={tag.id} className="crm-tag-item" style={{
-                      background: 'rgba(255, 255, 255, 0.06)',
-                      border: '1px solid rgba(255, 255, 255, 0.12)',
+                      background: 'color-mix(in oklch, var(--foreground) 6%, transparent)',
+                      border: '1px solid color-mix(in oklch, var(--foreground) 12%, transparent)',
                       padding: '3px 8px',
                       borderRadius: '4px',
                       fontSize: '0.75rem',
-                      color: '#ccd6f6',
+                      color: 'var(--foreground)',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '6px'
                     }}>
                       {tag.name}
                       <button type="button" onClick={() => handleRemoveTagFromLead(tag.id)} style={{
-                        background: 'none', border: 'none', color: '#ff6b6b', cursor: 'pointer', padding: 0, fontSize: '0.85rem', display: 'flex', alignItems: 'center'
+                        background: 'none', border: 'none', color: 'var(--destructive)', cursor: 'pointer', padding: 0, fontSize: '0.85rem', display: 'flex', alignItems: 'center'
                       }}>×</button>
                     </span>
                   ))}
-                  {selectedTags.length === 0 && <span style={{ color: '#8892b0', fontSize: '0.75rem', fontStyle: 'italic' }}>Nenhuma tag adicionada.</span>}
+                  {selectedTags.length === 0 && <span style={{ color: 'var(--muted-foreground)', fontSize: '0.75rem', fontStyle: 'italic' }}>Nenhuma tag adicionada.</span>}
                 </div>
                 <div style={{ display: 'flex', gap: '6px', marginBottom: '6px' }}>
                   <select
@@ -527,7 +527,7 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                     type="button"
                     className="crm-schedule-btn"
                     onClick={handleCreateNewTag}
-                    style={{ margin: 0, padding: '0 12px', fontSize: '0.8rem', height: '36px', width: 'auto', background: 'rgba(0, 229, 204, 0.1)', color: '#00E5CC', border: '1px solid rgba(0, 229, 204, 0.2)' }}
+                    style={{ margin: 0, padding: '0 12px', fontSize: '0.8rem', height: '36px', width: 'auto', background: 'color-mix(in oklch, var(--primary) 10%, transparent)', color: 'var(--primary)', border: '1px solid color-mix(in oklch, var(--primary) 20%, transparent)' }}
                   >
                     Criar
                   </button>
@@ -560,23 +560,23 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
           >
             <div className="schedule-modal-header">
               <h2 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Zap size={18} style={{ color: '#a78bfa' }} />
+                <Zap size={18} style={{ color: 'var(--purple)' }} />
                 Enviar Fluxo para Lead
               </h2>
               <button className="close-btn" onClick={() => setShowSendFlowModal(false)}>✕</button>
             </div>
 
             <div className="schedule-modal-body">
-              <p style={{ color: '#8892b0', fontSize: '0.82rem', marginBottom: '16px', lineHeight: 1.5 }}>
+              <p style={{ color: 'var(--muted-foreground)', fontSize: '0.82rem', marginBottom: '16px', lineHeight: 1.5 }}>
                 Selecione um fluxo ativo. As mensagens serão enviadas imediatamente em sequência para
-                <strong style={{ color: '#ccd6f6' }}> {contact.name || contact.phone}</strong>,
+                <strong style={{ color: 'var(--foreground)' }}> {contact.name || contact.phone}</strong>,
                 independente de gatilhos.
               </p>
 
               <div className="form-group">
                 <label>Selecione o Fluxo</label>
                 {chatFlows.length === 0 ? (
-                  <p style={{ color: '#8892b0', fontSize: '0.82rem', fontStyle: 'italic', padding: '10px 0' }}>
+                  <p style={{ color: 'var(--muted-foreground)', fontSize: '0.82rem', fontStyle: 'italic', padding: '10px 0' }}>
                     Nenhum fluxo cadastrado. Crie um fluxo no Construtor de Fluxos primeiro.
                   </p>
                 ) : (
@@ -590,8 +590,8 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                           gap: '10px',
                           padding: '10px 14px',
                           borderRadius: '8px',
-                          border: `1px solid ${selectedFlowId === flow.id ? 'rgba(167, 139, 250, 0.6)' : 'rgba(255,255,255,0.08)'}`,
-                          background: selectedFlowId === flow.id ? 'rgba(99, 102, 241, 0.12)' : 'rgba(255,255,255,0.03)',
+                          border: `1px solid ${selectedFlowId === flow.id ? 'color-mix(in oklch, var(--purple) 60%, transparent)' : 'color-mix(in oklch, var(--foreground) 8%, transparent)'}`,
+                          background: selectedFlowId === flow.id ? 'color-mix(in oklch, var(--purple) 12%, transparent)' : 'color-mix(in oklch, var(--foreground) 3%, transparent)',
                           cursor: 'pointer',
                           transition: 'all 0.2s ease',
                         }}
@@ -602,10 +602,10 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                           value={flow.id}
                           checked={selectedFlowId === flow.id}
                           onChange={() => setSelectedFlowId(flow.id)}
-                          style={{ accentColor: '#a78bfa', width: '16px', height: '16px', cursor: 'pointer' }}
+                          style={{ accentColor: 'var(--purple)', width: '16px', height: '16px', cursor: 'pointer' }}
                         />
                         <span style={{
-                          color: selectedFlowId === flow.id ? '#c4b5fd' : '#ccd6f6',
+                          color: selectedFlowId === flow.id ? 'var(--purple)' : 'var(--foreground)',
                           fontSize: '0.85rem',
                           fontWeight: selectedFlowId === flow.id ? 600 : 400,
                         }}>
@@ -626,8 +626,8 @@ export default function ContactCrmModal({ contactId, companyId, onClose }: Conta
                 disabled={isSendingFlow || !selectedFlowId || sendFlowSuccess}
                 style={{
                   background: sendFlowSuccess
-                    ? 'linear-gradient(135deg, #00c96b 0%, #00e5a0 100%)'
-                    : 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                    ? 'linear-gradient(135deg, var(--primary) 0%, var(--primary) 100%)'
+                    : 'linear-gradient(135deg, var(--purple) 0%, var(--purple) 100%)',
                   border: 'none',
                   display: 'flex',
                   alignItems: 'center',

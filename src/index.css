@@ -55,11 +55,6 @@
   --shadow-2xl: 0px 2px 10px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: -0.01em;
   --spacing: 0.25rem;
-
-  /* Cores de suporte legado caso componentes antigos ainda as referenciem */
-  --color-neon-green: #00FF88;
-  --color-neon-cyan: #00E5CC;
-  --color-neon-blue: #0066FF;
 }
 
 .dark {
@@ -183,6 +178,46 @@
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
   }
+}
+
+/* ---- Aliases semânticos derivados exclusivamente dos tokens TweakCN ---- */
+:root {
+  --warning: var(--chart-5);
+  --info: var(--chart-3);
+  --purple: var(--chart-4);
+  --transition-fast: 150ms ease;
+  --transition-med: 300ms ease;
+  color-scheme: light;
+}
+
+.dark {
+  --warning: var(--chart-2);
+  --info: var(--chart-4);
+  --purple: var(--chart-5);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-purple: var(--purple);
+}
+
+body,
+.login-card,
+.sidebar {
+  transition: background-color var(--transition-med), color var(--transition-med), border-color var(--transition-med);
+}
+
+input,
+select,
+textarea {
+  color: var(--foreground);
+}
+
+option {
+  background: var(--popover);
+  color: var(--popover-foreground);
 }
 
 html, body {

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { MessageCircle, Kanban, Settings, LogOut, Zap, Megaphone, FolderOpen, Keyboard, Menu, X } from 'lucide-react';
 import './DashboardLayout.css';
+import ThemeToggle from './ThemeToggle';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -122,12 +123,12 @@ export default function DashboardLayout({ children, activeView, onViewChange }: 
             <path d="M14 20c0-3.3 2.7-6 6-6s6 2.7 6 6c0 2.3-1.3 4.3-3.2 5.4L24 29h-8l1.2-3.6C15.3 24.3 14 22.3 14 20z" fill="url(#gG2)"/>
             <defs>
               <linearGradient id="gG" x1="3" y1="3" x2="37" y2="37" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#00FF88"/>
-                <stop offset="100%" stopColor="#00E5CC"/>
+                <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
+                <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
               </linearGradient>
               <linearGradient id="gG2" x1="14" y1="14" x2="26" y2="30" gradientUnits="userSpaceOnUse">
-                <stop offset="0%" stopColor="#00FF88"/>
-                <stop offset="100%" stopColor="#00E5CC"/>
+                <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
+                <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
               </linearGradient>
             </defs>
           </svg>
@@ -159,12 +160,12 @@ export default function DashboardLayout({ children, activeView, onViewChange }: 
               <path d="M14 20c0-3.3 2.7-6 6-6s6 2.7 6 6c0 2.3-1.3 4.3-3.2 5.4L24 29h-8l1.2-3.6C15.3 24.3 14 22.3 14 20z" fill="url(#gG2)"/>
               <defs>
                 <linearGradient id="gG" x1="3" y1="3" x2="37" y2="37" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#00FF88"/>
-                  <stop offset="100%" stopColor="#00E5CC"/>
+                  <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
+                  <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
                 </linearGradient>
                 <linearGradient id="gG2" x1="14" y1="14" x2="26" y2="30" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#00FF88"/>
-                  <stop offset="100%" stopColor="#00E5CC"/>
+                  <stop offset="0%" style={{ stopColor: 'var(--primary)' }}/>
+                  <stop offset="100%" style={{ stopColor: 'color-mix(in oklch, var(--primary) 65%, var(--chart-3))' }}/>
                 </linearGradient>
               </defs>
             </svg>
@@ -224,6 +225,7 @@ export default function DashboardLayout({ children, activeView, onViewChange }: 
         </nav>
 
         <div className="sidebar-footer">
+          <ThemeToggle className="nav-btn" />
           <button className="nav-btn logout-btn" onClick={handleLogout} title="Sair">
             <LogOut size={22} />
           </button>
